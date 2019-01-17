@@ -173,15 +173,17 @@ package_build(file.path(PATH, PACKAGENAME))
 ```
 
 # Installing test
+
 ```{r}
 library(devtools)
-
 install_github("simazhi/chinese_ideophone_database/CHIDEOR")
+#detach(package:devtools,unload = TRUE)
 
 library(CHIDEOR)
 
 data(package = "CHIDEOR")
 
+full_database # so it worked, the data is now here
 ```
 
 
