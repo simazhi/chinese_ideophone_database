@@ -1,0 +1,1 @@
+# chinese_ideophone_database
