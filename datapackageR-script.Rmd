@@ -94,21 +94,24 @@ date: 17 January, 2018
 output_format: html_document
 ---
 
-Followed by the r code (dplyr etc. new variables etc.)
+```{r}
+full_database <- df
+```
+
 ```
 
 # Let DataPackageR know about the data objects to store in the package.
 
 ```{r}
-use_data_object("df")
+use_data_object("full_database")
 ```
 
 # Build the package (for the first time).
 
 ```{r}
 options("DataPackageR_interact" = FALSE)
-
-package_build(packageName = file.path(PATH, PACKAGENAME), install = FALSE)
+package_build(packageName = file.path(PATH, "CHIDEOR"),
+              install = FALSE)
 ```
 
 # Next edit the data set documentation.
@@ -169,5 +172,16 @@ Add more stuff if you want with the previous steps
 package_build(file.path(PATH, PACKAGENAME))
 ```
 
+# Installing test
+```{r}
+library(devtools)
+
+install_github("simazhi/chinese_ideophone_database/CHIDEOR")
+
+library(CHIDEOR)
+
+data(package = "CHIDEOR")
+
+```
 
 
