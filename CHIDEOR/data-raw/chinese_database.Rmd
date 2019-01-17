@@ -1,0 +1,4 @@
+---
+title: Process OSF repository data into datapackage
+author: Thomas Van Hoey
+---

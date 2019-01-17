@@ -1,0 +1,173 @@
+---
+title: "Making Datapackage with DataPackageR"
+author: "Thomas Van Hoey"
+date: "1/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Steps described in:
+
+* [](https://ropensci.org/blog/2018/09/18/datapackager/)
+* [](https://github.com/ropensci/DataPackageR)
+
+On the why:
+
+* [](https://grasshoppermouse.github.io/2017/10/18/put-your-data-in-an-r-package/)
+
+Other methods:
+
+* [](https://www.erikhoward.net/how-to-create-an-r-data-package/)
+* [](http://www.clayford.net/statistics/creating-an-r-data-package/)
+
+# Set up
+```{r}
+library(DataPackageR)
+```
+
+# Variables
+
+```{r}
+PATH <- "/Users/Thomas/Google\ Drive/chinese_ideophone_database"
+PACKAGENAME <- "CHIDEOR" #Chinese Ideophone Database R
+```
+
+
+# Getting data from osfr
+
+```{r}
+library(osfr)
+
+cr_project <- osf_retrieve_node("kpwgf") # OSF Chinese Ideophone Database
+cr_project %>%
+  osf_ls_files() %>%
+  osf_download(overwrite = TRUE)
+```
+
+read in data as df
+```{r}
+library(readxl)
+
+df <- read_excel("fulldatabase.xlsx")
+df
+```
+
+
+
+# Create a data package directory structure.
+
+```{r}
+datapackage_skeleton(name = PACKAGENAME,
+                     path = PATH,
+                     force = TRUE)
+```
+
+# Add raw data to the package.
+```{r}
+# write our raw data to a csv
+write.csv(x = df,file = file.path(PATH, "fulldata.csv"), row.names = FALSE)
+# this works because we called datapackage_skeleton() first.
+use_raw_dataset(file.path(PATH, "fulldata.csv"))
+```
+
+
+# Add a data processing script.
+
+```{r}
+use_processing_script(file = "chinese_database.Rmd",
+                      author = "Thomas Van Hoey",
+                      title = "Process OSF repository data into datapackage")
+```
+
+
+# Edit your processing script (the Rmd file)
+
+
+```
+---
+title: Process OSF repository data into datapackage
+author: Thomas Van Hoey
+date: 17 January, 2018
+output_format: html_document
+---
+
+Followed by the r code (dplyr etc. new variables etc.)
+```
+
+# Let DataPackageR know about the data objects to store in the package.
+
+```{r}
+use_data_object("df")
+```
+
+# Build the package (for the first time).
+
+```{r}
+options("DataPackageR_interact" = FALSE)
+
+package_build(packageName = file.path(PATH, PACKAGENAME), install = FALSE)
+```
+
+# Next edit the data set documentation.
+File can be found under `data-raw`, the `documentation.R` file
+
+>This is standard roxygen markup. You can use roxygen or markdown style comments. You should 
+* describe your data set, 
+* where it comes from, 
+* the columns of the data (if applicable), and 
+* any other information that can help a user make good use of and understand the data set. 
+We’ll fill this in and save the resulting file.
+
+```
+## #' TidyCars
+## #' A data package for TidyCars.
+## #' @docType package
+## #' @aliases TidyCars-package
+## #' @title A tidied cars data set.
+## #' @name TidyCars
+## #' @description Cars but better. The variable names are more meaninful.
+## #' @details The columns have been renamed to indicate the units and better describe what is measured.
+## #' @seealso
+## #' \link{tidy_cars}
+## NULL
+## 
+## 
+## 
+## #' The stopping distances of cars at different speeds.
+## #' @name tidy_cars
+## #' @docType data
+## #' @title The stopping distances of cars traveling at different speeds.
+## #' @format a \code{data.frame} containing the following fields:
+## #' \describe{
+## #' \item{speed_mph}{The speed of the vehicle.}
+## #' \item{stopping_distace}{The stopping distance of the vehicle.}
+## #' }
+## #' @source The data comes from the cars data set distributed with R.
+## #' @seealso
+## #' \link{TidyCars}
+## NULL
+```
+
+Next, run `document()` in the next chunk
+
+```{r}
+# ensure we run document() from the DataPackageR namespace and not document() from roxygen or devtools.
+package_path <- file.path(PATH, PACKAGENAME)
+DataPackageR::document(package_path)
+```
+
+# Iterate…
+
+Add more stuff if you want with the previous steps
+
+# A final build.
+
+```{r}
+package_build(file.path(PATH, PACKAGENAME))
+```
+
+
+

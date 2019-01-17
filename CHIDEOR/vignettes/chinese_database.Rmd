@@ -1,0 +1,10 @@
+---
+title: Process OSF repository data into datapackage
+author: Thomas Van Hoey
+vignette: >
+  %\VignetteIndexEntry{Process OSF repository data into datapackage}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+

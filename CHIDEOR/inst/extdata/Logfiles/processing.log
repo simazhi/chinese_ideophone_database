@@ -1,0 +1,41 @@
+TRACE [2019-01-17 16:18:40] Logging to /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/inst/extdata/Logfiles/processing.log
+TRACE [2019-01-17 16:18:40] Processing data
+TRACE [2019-01-17 16:18:40] Reading yaml configuration
+TRACE [2019-01-17 16:18:40] Found /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/data-raw/chinese_database.Rmd
+TRACE [2019-01-17 16:18:40] Processing 1 of 1: /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/data-raw/chinese_database.Rmd
+
+TRACE [2019-01-17 16:18:41] 0 data set(s) created by chinese_database.Rmd
+TRACE [2019-01-17 16:18:41] NEWS.md file not found, creating!
+TRACE [2019-01-17 16:18:41] NEWS.md file found, updating!
+TRACE [2019-01-17 16:18:41] Saving to data
+TRACE [2019-01-17 16:18:55] Logging to /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/inst/extdata/Logfiles/processing.log
+TRACE [2019-01-17 16:18:55] Processing data
+TRACE [2019-01-17 16:18:55] Reading yaml configuration
+TRACE [2019-01-17 16:18:55] Found /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/data-raw/chinese_database.Rmd
+TRACE [2019-01-17 16:18:55] Processing 1 of 1: /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/data-raw/chinese_database.Rmd
+
+TRACE [2019-01-17 16:18:56] 0 data set(s) created by chinese_database.Rmd
+TRACE [2019-01-17 16:18:56] NEWS.md file found, updating!
+TRACE [2019-01-17 16:18:56] Processed data sets match existing data sets at version 0.1.0
+TRACE [2019-01-17 16:18:56] Saving to data
+TRACE [2019-01-17 16:18:56] Copied documentation to /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/R/CHIDEOR.R
+TRACE [2019-01-17 16:18:56] Done
+TRACE [2019-01-17 16:18:56] DataPackageR succeeded
+TRACE [2019-01-17 16:18:56] Building documentation
+TRACE [2019-01-17 16:18:56] Building package
+TRACE [2019-01-17 16:19:03] Rebuilding data package documentation.
+TRACE [2019-01-17 16:19:10] Logging to /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/inst/extdata/Logfiles/processing.log
+TRACE [2019-01-17 16:19:10] Processing data
+TRACE [2019-01-17 16:19:10] Reading yaml configuration
+TRACE [2019-01-17 16:19:10] Found /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/data-raw/chinese_database.Rmd
+TRACE [2019-01-17 16:19:10] Processing 1 of 1: /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/data-raw/chinese_database.Rmd
+
+TRACE [2019-01-17 16:19:11] 0 data set(s) created by chinese_database.Rmd
+TRACE [2019-01-17 16:19:11] NEWS.md file found, updating!
+TRACE [2019-01-17 16:19:11] Processed data sets match existing data sets at version 0.1.0
+TRACE [2019-01-17 16:19:11] Saving to data
+TRACE [2019-01-17 16:19:11] Copied documentation to /Users/Thomas/Google Drive/chinese_ideophone_database/CHIDEOR/R/CHIDEOR.R
+TRACE [2019-01-17 16:19:11] Done
+TRACE [2019-01-17 16:19:11] DataPackageR succeeded
+TRACE [2019-01-17 16:19:11] Building documentation
+TRACE [2019-01-17 16:19:13] Building package

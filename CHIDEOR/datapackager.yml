@@ -1,0 +1,8 @@
+configuration:
+  files:
+    chinese_database.Rmd:
+      enabled: yes
+  objects:
+  - df
+  render_root:
+    tmp: '196931'
