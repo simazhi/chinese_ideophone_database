@@ -5,8 +5,8 @@ account: simazhi
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 643562
-bundleId: 1978133
+bundleId: 1978216
 url: https://simazhi.shinyapps.io/Chineseideophone/
-when: 1554105156.73098
+when: 1554108336.60547
 asMultiple: FALSE
 asStatic: FALSE
