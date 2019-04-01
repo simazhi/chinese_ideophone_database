@@ -24,19 +24,19 @@ library(CHIDEOR)
 data("full_database")
 
 #ideodata <- read_xlsx("www/data.xlsx") %>%
-    ideodata <- full_database %>%
-    filter(morph != "NOTIDEOPHONE") %>%
-    select(pinyinnone,
-           traditional,
-           simplified,
-           pinyintone,
-           MC,
-           OC,
-           zdic,
-           Kroll,
-           morph,
-           radsup,
-           variant)
+    ideodata <- full_database #%>%
+    #filter(morph != "NOTIDEOPHONE") #%>%
+    # select(pinyinnone,
+    #        traditional,
+    #        simplified,
+    #        pinyintone,
+    #        MC,
+    #        OC,
+    #        zdic,
+    #        Kroll,
+    #        morph,
+    #        radsup,
+    #        variant)
 
 
 
@@ -46,9 +46,13 @@ data("full_database")
 
 server <- 
     function(input, output) {
-        checkGroup <- reactive(c(input$checkGroupForm,
+        checkGroup <- reactive(c(input$checkGroupPhonology,
+                                 input$checkGroupOrthography,
+                                 input$checkGroupFormation,
+                                 input$checkGroupMotivation,
                                  input$checkGroupMeaning,
-                                 input$checkGroupFormation))
+                                 input$checkGroupFrequencies,
+                                 input$checkGroupOther))
         #input$checkGroup <- c(input$checkGroupForm,input$checkGroupMeaning)
         # Filter data based on selections
         output$table <- DT::renderDataTable(
@@ -65,7 +69,8 @@ server <-
                                        # 'print'
                                        ),
                            colReorder = TRUE)
-            )
+            ),
+            options = list(pageLength = 25)
         )
         
         # # Reactive expression with the data, in this case iris
@@ -87,43 +92,109 @@ server <-
 
 ui <-
 fluidPage(theme = shinytheme("flatly"),
-    titlePanel("Chinese ideophones — a database"),
+    titlePanel("The Chinese Ideophones Database (CHIDEOD)"),
     
     sidebarLayout(position = "left",
                   fluid = TRUE,
                   sidebarPanel(
                       width = 3,
-                       # h4("test"),
-                       # br(),
                        #checkboxes
-                       checkboxGroupInput("checkGroupForm", 
+                       checkboxGroupInput("checkGroupPhonology", 
                                           label = h3("Phonology"), 
                                           choices = c("Pinyin without tones" = "pinyinnone", 
                                                       "Pinyin with tones" = "pinyintone",
-                                                      "Traditional Chinese" = "traditional",
-                                                      "Simplified Chinese" = "simplified",
+                                                      "Pinyin with numbers" = "pinyinnum",
                                                       "Middle Chinese" = "MC", 
                                                       "Old Chinese" = "OC"),
-                                          selected = c("traditional", "pinyinnone")
+                                          selected = "pinyinnone"
                                           ),
                        #end of checkboxes
                        br(),
-                       # checkboxes two
+                      #checkboxes two
+                      checkboxGroupInput("checkGroupOrthography", 
+                                         label = h3("Orthography"), 
+                                         choices = c("Traditional Chinese" = "traditional",
+                                                     "Simplified Chinese" = "simplified",
+                                                     "Traditional 1" = "T1",
+                                                     "Traditional 2" = "T2",
+                                                     "Traditional 3" = "T3",
+                                                     "Traditional 4" = "T4",
+                                                     "Simplified 1" = "S1",
+                                                     "Simplified 2" = "S2",
+                                                     "Simplified 3" = "S3",
+                                                     "Simplified 4" = "S4",
+                                                     "Semantic radical 1" = "S1.sem",
+                                                     "Semantic radical 2" = "S2.sem",
+                                                     "Semantic radical 3" = "S3.sem",
+                                                     "Semantic radical 4" = "S4.sem",
+                                                     "Sound radical 1" = "S1.phon",
+                                                     "Sound radical 2" = "S2.phon",
+                                                     "Sound radical 3" = "S3.phon",
+                                                     "Sound radical 4" = "S4.phon"),                                                   
+                                         selected = "traditional"
+                                         ),
+                      #end of checkboxes
+                      br(), 
+                      # checkboxes three
+                      checkboxGroupInput("checkGroupFormation", 
+                                         label = h3("Formation"), 
+                                         choices = c("Base and Reduplicant" = "morphology")
+                                        ),
+                      #end of checkboxes
+                      br(), 
+                      # checkboxes four
+                      checkboxGroupInput("checkGroupMotivation", 
+                                         label = h3("Motivation"), 
+                                         choices = c("Radical support" = "radsup")
+                                         ),
+                      #end of checkboxes
+                      # checkboxes five
                        checkboxGroupInput("checkGroupMeaning", 
                                           label = h3("Meaning"), 
                                           choices = c("Handian 漢典 (zdic)" = "zdic",
-                                                      "Kroll (2015)" = "Kroll"),
+                                                      "Kroll (2015)" = "Kroll",
+                                                      "Hanyu Da Cidian 漢語大詞典" = "HYDCD"),
                                           selected = "Kroll"
                                           ),
                        #end of checkboxes
                        br(),
-                       # checkboxes three
-                       checkboxGroupInput("checkGroupFormation", 
-                                          label = h3("Formation"), 
-                                          choices = c("Base and Reduplicant" = "morph",
-                                                      "Radical support" = "radsup",
-                                                      "variants" = "variant")
-                                          )#, #end of checkboxes
+                      # checkboxes six
+                      checkboxGroupInput("checkGroupFrequencies", 
+                                         label = h3("Frequencies"), 
+                                         choices = c("S1 character freq" = "S1.charfreq",
+                                                     "S2 character freq" = "S2.charfreq",
+                                                     "S3 character freq" = "S3.charfreq",
+                                                     "S4 character freq" = "S4.charfreq",
+                                                     "S1 family freq" = "S1.famfreq",
+                                                     "S2 family freq" = "S2.famfreq",
+                                                     "S3 family freq" = "S3.famfreq",
+                                                     "S4 family freq" = "S4.famfreq",
+                                                     "S1 semantic radical freq" = "S1.semfreq",
+                                                     "S2 semantic radical freq" = "S2.semfreq",
+                                                     "S3 semantic radical freq" = "S3.semfreq",
+                                                     "S4 semantic radical freq" = "S4.semfreq",
+                                                     "S1 semantic radical fam freq" = "S1.semfam",
+                                                     "S2 semantic radical fam freq" = "S1.semfam",
+                                                     "S3 semantic radical fam freq" = "S1.semfam",
+                                                     "S4 semantic radical fam freq" = "S1.semfam",
+                                                     "S1 sound freq" = "S1.phonfreq",
+                                                     "S2 sound freq" = "S2.phonfreq",
+                                                     "S3 sound freq" = "S3.phonfreq",
+                                                     "S4 sound freq" = "S4.phonfreq",
+                                                     "S1 sound fam freq" = "S1.phonfam",
+                                                     "S2 sound fam freq" = "S2.phonfam",
+                                                     "S3 sound fam freq" = "S3.phonfam",
+                                                     "S4 sound fam freq" = "S4.phonfam")
+                      ),
+                      #end of checkboxes
+                      br(),
+                      # checkboxes seven
+                      checkboxGroupInput("checkGroupOther", 
+                                         label = h3("Other variables"), 
+                                         choices = c("Variants" = "variant",
+                                                     "Data source" = "datasource")
+                      )
+                      #, #end of checkboxes
                       # downloadButton('download',"Download the data")
                 ), # end of sidepanel
 
@@ -137,7 +208,7 @@ fluidPage(theme = shinytheme("flatly"),
     print("and Arthur Lewis Thompson"),
     br(),
     print("Last updated:"),
-    strong("January 2019"),
+    strong("April 2019"),
     a(href="https://osf.io/kpwgf/", "(link to repository)"),
     br(),
     print("Please cite as: "),
