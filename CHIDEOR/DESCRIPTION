@@ -12,7 +12,7 @@ Encoding: UTF-8
 LazyData: true
 DataVersion: 0.1.0
 Roxygen: list(markdown = TRUE)
-Date: 2019-01-17
+Date: 2019-04-01
 Suggests: 
     knitr,
     rmarkdown

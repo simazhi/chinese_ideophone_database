@@ -4,7 +4,7 @@
 \name{CHIDEOR}
 \alias{CHIDEOR}
 \alias{CHIDEOR-package}
-\title{Chinese Ideophone Database}
+\title{Package Title}
 \description{
 A description of the data package
 }
