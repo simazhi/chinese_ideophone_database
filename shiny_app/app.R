@@ -24,29 +24,11 @@ library(CHIDEOR)
 data("full_database")
 
 #ideodata <- read_xlsx("www/data.xlsx") %>%
-    ideodata <- full_database #%>%
-    #filter(morph != "NOTIDEOPHONE") #%>%
-    # select(pinyinnone,
-    #        traditional,
-    #        simplified,
-    #        pinyintone,
-    #        MC,
-    #        OC,
-    #        zdic,
-    #        Kroll,
-    #        morph,
-    #        radsup,
-    #        variant)
+    ideodata <- full_database 
 
 
-    
-    func <- function() {
-        "hi there!"
-    }
 
 ## SERVER
-# Load the ggplot2 package which provides
-# the 'mpg' dataset.
 
 server <- 
     function(input, output) {
