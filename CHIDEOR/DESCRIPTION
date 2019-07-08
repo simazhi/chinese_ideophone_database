@@ -2,17 +2,17 @@ Package: CHIDEOR
 Title: What the Package Does (One Line, Title Case)
 Version: 1.0
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Thomas",
+           family = "Van Hoey",
            role = c("aut", "cre"),
-           email = "first.last@example.com")
-Description: What the package does (one paragraph).
+           email = "thomas_van_hoey@hotmail.com")
+Description: This package contains the contents of the Chinese Ideophone Database CHIDEOD.
 License: What license it uses
 Encoding: UTF-8
 LazyData: true
-DataVersion: 0.1.0
+DataVersion: 0.5.0
 Roxygen: list(markdown = TRUE)
-Date: 2019-04-01
+Date: 2019-07-08
 Suggests: 
     knitr,
     rmarkdown

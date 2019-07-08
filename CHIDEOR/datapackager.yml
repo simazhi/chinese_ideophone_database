@@ -3,6 +3,6 @@ configuration:
     chinese_database.Rmd:
       enabled: yes
   objects:
-  - full_database
+  - chideod
   render_root:
-    tmp: '677647'
+    tmp: '389835'

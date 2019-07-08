@@ -1,24 +1,24 @@
 #' CHIDEOR
-#' A data package for CHIDEOR.
+#' A data package for CHIDEOD.
 #' @docType package
 #' @aliases CHIDEOR-package
-#' @title Package Title
+#' @title CHIDEOD -- The Chinese Ideophone Database
 #' @name CHIDEOR
 #' @description A description of the data package
 #' @details Use \code{data(package='CHIDEOR')$results[, 3]} to see a list of available data sets in this data package
 #'     and/or DataPackageR::load_all
 #' _datasets() to load them.
 #' @seealso
-#' \link{full_database}
+#' \link{chideod}
 NULL
 
 
 
 
 #' Detailed description of the data
-#' @name full_database
+#' @name chideod
 #' @docType data
-#' @title Descriptive data title
+#' @title The Chinese Ideophone Database (CHIDEOD)
 #' @format a \code{tbl_df} containing the following fields:
 #' \describe{
 #' \item{traditional}{}
@@ -78,7 +78,7 @@ NULL
 #' \item{datasource}{}
 #' \item{note}{}
 #' }
-#' @source The data comes from________________________.
+#' @source The data comes from https://osf.io/kpwg.
 #' @seealso
 #' \link{CHIDEOR}
 NULL

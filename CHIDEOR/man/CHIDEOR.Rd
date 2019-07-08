@@ -4,18 +4,18 @@
 \name{CHIDEOR}
 \alias{CHIDEOR}
 \alias{CHIDEOR-package}
-\title{Package Title}
+\title{CHIDEOD -- The Chinese Ideophone Database}
 \description{
 A description of the data package
 }
 \details{
 CHIDEOR
-A data package for CHIDEOR.
+A data package for CHIDEOD.
 
 Use \code{data(package='CHIDEOR')$results[, 3]} to see a list of available data sets in this data package
 and/or DataPackageR::load_all
 _datasets() to load them.
 }
 \seealso{
-\link{full_database}
+\link{chideod}
 }

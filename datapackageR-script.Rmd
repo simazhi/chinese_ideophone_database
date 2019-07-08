@@ -50,8 +50,10 @@ cr_project %>%
 read in data as df
 ```{r}
 library(readxl)
+library(tidyverse)
 
-df <- read_excel("fulldatabase.xlsx")
+df <- read_excel("chideod.xlsx") %>%
+  select(-`...1`)
 df
 ```
 
@@ -68,9 +70,9 @@ datapackage_skeleton(name = PACKAGENAME,
 # Add raw data to the package.
 ```{r}
 # write our raw data to a csv
-write.csv(x = df,file = file.path(PATH, "fulldata.csv"), row.names = FALSE)
+write.csv(x = df,file = file.path(PATH, "chideod.csv"), row.names = FALSE)
 # this works because we called datapackage_skeleton() first.
-use_raw_dataset(file.path(PATH, "fulldata.csv"))
+use_raw_dataset(file.path(PATH, "chideod.csv"))
 ```
 
 
@@ -90,12 +92,12 @@ use_processing_script(file = "chinese_database.Rmd",
 ---
 title: Process OSF repository data into datapackage
 author: Thomas Van Hoey
-date: 17 January, 2018
+date:  8 July, 2019
 output_format: html_document
 ---
 
 ```{r}
-full_database <- df
+chideod <- df
 ```
 
 ```
@@ -103,7 +105,7 @@ full_database <- df
 # Let DataPackageR know about the data objects to store in the package.
 
 ```{r}
-use_data_object("full_database")
+use_data_object("chideod")
 ```
 
 # Build the package (for the first time).
@@ -125,33 +127,90 @@ File can be found under `data-raw`, the `documentation.R` file
 We’ll fill this in and save the resulting file.
 
 ```
-## #' TidyCars
-## #' A data package for TidyCars.
-## #' @docType package
-## #' @aliases TidyCars-package
-## #' @title A tidied cars data set.
-## #' @name TidyCars
-## #' @description Cars but better. The variable names are more meaninful.
-## #' @details The columns have been renamed to indicate the units and better describe what is measured.
-## #' @seealso
-## #' \link{tidy_cars}
-## NULL
-## 
-## 
-## 
-## #' The stopping distances of cars at different speeds.
-## #' @name tidy_cars
-## #' @docType data
-## #' @title The stopping distances of cars traveling at different speeds.
-## #' @format a \code{data.frame} containing the following fields:
-## #' \describe{
-## #' \item{speed_mph}{The speed of the vehicle.}
-## #' \item{stopping_distace}{The stopping distance of the vehicle.}
-## #' }
-## #' @source The data comes from the cars data set distributed with R.
-## #' @seealso
-## #' \link{TidyCars}
-## NULL
+#' CHIDEOR
+#' A data package for CHIDEOD.
+#' @docType package
+#' @aliases CHIDEOR-package
+#' @title CHIDEOD -- The Chinese Ideophone Database
+#' @name CHIDEOR
+#' @description This package contains the Chinese Ideophone Database CHIDEOD.
+#' @details Use \code{data(package='CHIDEOR')$results[, 3]} to see a list of available data sets in this data package
+#'     and/or DataPackageR::load_all
+#' _datasets() to load them.
+#' @seealso
+#' \link{chideod}
+NULL
+
+
+
+#' Detailed description of the data
+#' @name chideod
+#' @docType data
+#' @title The Chinese Ideophone Database (CHIDEOD)
+#' @format a \code{tbl_df} containing the following fields:
+#' \describe{
+#' \item{traditional}{}
+#' \item{simplified}{}
+#' \item{pinyintone}{}
+#' \item{pinyinnum}{}
+#' \item{pinyinnone}{}
+#' \item{HYDCD}{}
+#' \item{zdic}{}
+#' \item{Kroll}{}
+#' \item{MC}{}
+#' \item{OC}{}
+#' \item{radsup}{}
+#' \item{S1}{}
+#' \item{S2}{}
+#' \item{S3}{}
+#' \item{S4}{}
+#' \item{T1}{}
+#' \item{T2}{}
+#' \item{T3}{}
+#' \item{T4}{}
+#' \item{morphology}{}
+#' \item{S1.charfreq}{}
+#' \item{S2.charfreq}{}
+#' \item{S3.charfreq}{}
+#' \item{S4.charfreq}{}
+#' \item{S1.famfreq}{}
+#' \item{S2.famfreq}{}
+#' \item{S3.famfreq}{}
+#' \item{S4.famfreq}{}
+#' \item{S1.sem}{}
+#' \item{S2.sem}{}
+#' \item{S3.sem}{}
+#' \item{S4.sem}{}
+#' \item{S1.semfreq}{}
+#' \item{S2.semfreq}{}
+#' \item{S3.semfreq}{}
+#' \item{S4.semfreq}{}
+#' \item{S1.semfam}{}
+#' \item{S2.semfam}{}
+#' \item{S3.semfam}{}
+#' \item{S4.semfam}{}
+#' \item{S1.phon}{}
+#' \item{S2.phon}{}
+#' \item{S3.phon}{}
+#' \item{S4.phon}{}
+#' \item{S1.phonfreq}{}
+#' \item{S2.phonfreq}{}
+#' \item{S3.phonfreq}{}
+#' \item{S4.phonfreq}{}
+#' \item{S1.phonfam}{}
+#' \item{S2.phonfam}{}
+#' \item{S3.phonfam}{}
+#' \item{S4.phonfam}{}
+#' \item{sensorymod}{}
+#' \item{variant}{}
+#' \item{datasource}{}
+#' \item{note}{}
+#' }
+#' @source The data comes from https://osf.io/kpwg.
+#' @seealso
+#' \link{CHIDEOR}
+NULL
+
 ```
 
 Next, run `document()` in the next chunk
@@ -164,7 +223,38 @@ DataPackageR::document(package_path)
 
 # Iterate…
 
-Add more stuff if you want with the previous steps
+## the DESCRIPTION file
+
+```
+Package: CHIDEOR
+Title: What the Package Does (One Line, Title Case)
+Version: 1.0
+Authors@R: 
+    person(given = "Thomas",
+           family = "Van Hoey",
+           role = c("aut", "cre"),
+           email = "thomas_van_hoey@hotmail.com")
+Description: This package contains the contents of the Chinese Ideophone Database CHIDEOD.
+License: What license it uses
+Encoding: UTF-8
+LazyData: true
+DataVersion: 0.5.0
+Roxygen: list(markdown = TRUE)
+Date: 2019-07-08
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
+```
+
+```{r}
+# ensure we run document() from the DataPackageR namespace and not document() from roxygen or devtools.
+package_path <- file.path(PATH, PACKAGENAME)
+DataPackageR::document(package_path)
+```
+
+
 
 # A final build.
 
@@ -183,7 +273,7 @@ library(CHIDEOR)
 
 data(package = "CHIDEOR")
 
-full_database # so it worked, the data is now here
+chideod # so it worked, the data is now here
 ```
 
 
