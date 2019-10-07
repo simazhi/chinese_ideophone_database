@@ -21,10 +21,10 @@ library(shinythemes)
 
 library(CHIDEOR) 
 #make sure this is the latest version of this package
-data("full_database")
+data("chideod")
 
 #ideodata <- read_xlsx("www/data.xlsx") %>%
-    ideodata <- full_database 
+    ideodata <- chideod
 
 
 
@@ -186,7 +186,7 @@ navbarPage("CHIDEOD",
                     print("and Arthur Lewis Thompson"),
                     br(),
                     print("Last updated:"),
-                    strong("April 2019"),
+                    strong("July 2019"),
                     a(href="https://osf.io/kpwgf/", "(link to repository)"),
                     br(),
                     print("Please cite as: "),
@@ -211,7 +211,7 @@ navbarPage("CHIDEOD",
                     print("and Arthur Lewis Thompson"),
                     br(),
                     print("Last updated:"),
-                    strong("April 2019"),
+                    strong("July 2019"),
                     a(href="https://osf.io/kpwgf/", "(link to repository)"),
                     br(),
                     print("Please cite as: "),

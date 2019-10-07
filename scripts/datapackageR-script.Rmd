@@ -1,0 +1,295 @@
+---
+title: "Making Datapackage with DataPackageR"
+author: "Thomas Van Hoey"
+date: "1/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Steps described in:
+
+* [](https://ropensci.org/blog/2018/09/18/datapackager/)
+* [](https://github.com/ropensci/DataPackageR)
+
+On the why:
+
+* [](https://grasshoppermouse.github.io/2017/10/18/put-your-data-in-an-r-package/)
+
+Other methods:
+
+* [](https://www.erikhoward.net/how-to-create-an-r-data-package/)
+* [](http://www.clayford.net/statistics/creating-an-r-data-package/)
+
+# Set up
+```{r}
+library(DataPackageR)
+library(here)
+library(tidyverse)
+```
+
+# Variables
+
+```{r}
+PATH <- here()
+PACKAGENAME <- "CHIDEOD" #Chinese Ideophone Database R
+```
+
+
+# Getting data from osfr
+
+```{r}
+library(osfr)
+
+cr_project <- osf_retrieve_node("kpwgf") # OSF Chinese Ideophone Database
+cr_project %>%
+  osf_ls_files() %>%
+  filter(str_detect(name, "rds")) %>%
+  osf_download(overwrite = TRUE)
+```
+
+read in data as df
+```{r}
+df <- read_rds("chideod.rds")
+df
+```
+
+
+
+# Create a data package directory structure.
+
+```{r}
+datapackage_skeleton(name = PACKAGENAME,
+                     path = PATH,
+                     force = TRUE)
+```
+
+# Add raw data to the package.
+```{r}
+# NOW WITH RDS
+# write our raw data to a csv 
+#write.csv(x = df,file = file.path(PATH, "chideod.csv"), row.names = FALSE)
+
+# write raw data to rds
+write_csv(df, file.path(PATH, "chideod.csv"))
+
+# this works because we called datapackage_skeleton() first.
+use_raw_dataset(file.path(PATH, "chideod.csv"))
+```
+
+
+# Add a data processing script.
+
+```{r}
+use_processing_script(file = "chinese_database.Rmd",
+                      author = "Thomas Van Hoey",
+                      title = "Process OSF repository data into datapackage")
+```
+
+
+# Edit your processing script (the Rmd file)
+
+
+```
+---
+title: Process OSF repository data into datapackage
+author: Thomas Van Hoey
+date:  8 July, 2019
+output_format: html_document
+---
+
+```{r}
+chideod <- df
+```
+
+```
+
+# Let DataPackageR know about the data objects to store in the package.
+
+```{r}
+use_data_object("chideod")
+```
+
+# Build the package (for the first time).
+
+```{r}
+options("DataPackageR_interact" = FALSE)
+package_build(packageName = file.path(PATH, "CHIDEOD"),
+              install = FALSE)
+```
+
+# Next edit the data set documentation.
+File can be found under `data-raw`, the `documentation.R` file
+
+>This is standard roxygen markup. You can use roxygen or markdown style comments. You should 
+* describe your data set, 
+* where it comes from, 
+* the columns of the data (if applicable), and 
+* any other information that can help a user make good use of and understand the data set. 
+We’ll fill this in and save the resulting file.
+
+```
+#' CHIDEOD
+#' A data package for CHIDEOD.
+#' @docType package
+#' @aliases CHIDEOD-package
+#' @title CHIDEOD -- The Chinese Ideophone Database
+#' @name CHIDEOD
+#' @description AThis package contains the Chinese Ideophone Database CHIDEOD.
+#' @details Use \code{data(package='CHIDEOD')$results[, 3]} to see a list of available data sets in this data package
+#'     and/or DataPackageR::load_all
+#' _datasets() to load them.
+#' @seealso
+#' \link{chideod}
+NULL
+
+
+
+#' Detailed description of the data
+#' @name chideod
+#' @docType data
+#' @title The Chinese Ideophone Database (CHIDEOD)
+#' @format a \code{tbl_df} containing the following fields:
+#' \describe{
+#' \item{traditional}{}
+#' \item{simplified}{}
+#' \item{pinyintone}{}
+#' \item{pinyinnum}{}
+#' \item{pinyinnone}{}
+#' \item{HYDCD}{}
+#' \item{zdic}{}
+#' \item{Kroll}{}
+#' \item{MC}{}
+#' \item{OC}{}
+#' \item{radsup}{}
+#' \item{S1}{}
+#' \item{S2}{}
+#' \item{S3}{}
+#' \item{S4}{}
+#' \item{T1}{}
+#' \item{T2}{}
+#' \item{T3}{}
+#' \item{T4}{}
+#' \item{morphology}{}
+#' \item{S1.charfreq}{}
+#' \item{S2.charfreq}{}
+#' \item{S3.charfreq}{}
+#' \item{S4.charfreq}{}
+#' \item{S1.famfreq}{}
+#' \item{S2.famfreq}{}
+#' \item{S3.famfreq}{}
+#' \item{S4.famfreq}{}
+#' \item{S1.sem}{}
+#' \item{S2.sem}{}
+#' \item{S3.sem}{}
+#' \item{S4.sem}{}
+#' \item{S1.semfreq}{}
+#' \item{S2.semfreq}{}
+#' \item{S3.semfreq}{}
+#' \item{S4.semfreq}{}
+#' \item{S1.semfam}{}
+#' \item{S2.semfam}{}
+#' \item{S3.semfam}{}
+#' \item{S4.semfam}{}
+#' \item{S1.phon}{}
+#' \item{S2.phon}{}
+#' \item{S3.phon}{}
+#' \item{S4.phon}{}
+#' \item{S1.phonfreq}{}
+#' \item{S2.phonfreq}{}
+#' \item{S3.phonfreq}{}
+#' \item{S4.phonfreq}{}
+#' \item{S1.phonfam}{}
+#' \item{S2.phonfam}{}
+#' \item{S3.phonfam}{}
+#' \item{S4.phonfam}{}
+#' \item{sensorymod}{}
+#' \item{variant}{}
+#' \item{note}{}
+#' \item{datasource}{}
+#' \item{stage}{}
+#' \item{ASBC.dp}{}
+#' \item{ASBC.philosophy}{}
+#' \item{ASBC.literature}{}
+#' \item{ASBC.life}{}
+#' \item{ASBC.society}{}
+#' \item{ASBC.science}{}
+#' \item{ASBC.art}{}
+#' }
+#' @source The data comes from https://osf.io/kpwg.
+#' 
+#' 
+#' @seealso
+#' \link{CHIDEOD}
+NULL
+
+```
+
+Next, run `document()` in the next chunk
+
+```{r}
+# ensure we run document() from the DataPackageR namespace and not document() from roxygen or devtools.
+package_path <- file.path(PATH, PACKAGENAME)
+DataPackageR::document(package_path)
+```
+
+# Iterate…
+
+## the DESCRIPTION file
+
+```
+Package: CHIDEOD
+Title: Data package containing the Chinese Ideophone Database
+Version: 0.8
+Authors@R: 
+    person(given = "Thomas",
+           family = "Van Hoey",
+           role = c("aut", "cre"),
+           email = "thomas_van_hoey@hotmail.com")
+Description: This package contains the contents of the Chinese Ideophone Database CHIDEOD.
+License: GNU General Public License v2.0
+Encoding: UTF-8
+LazyData: true
+DataVersion: 0.5.0
+Roxygen: list(markdown = TRUE)
+Date: 2019-07-08
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
+```
+
+```{r}
+# ensure we run document() from the DataPackageR namespace and not document() from roxygen or devtools.
+package_path <- file.path(PATH, PACKAGENAME)
+DataPackageR::document(package_path)
+```
+
+
+
+
+# A final build.
+
+```{r}
+package_build(file.path(PATH, PACKAGENAME))
+```
+
+# Installing test
+
+```{r}
+library(devtools)
+install_github("simazhi/chinese_ideophone_database/CHIDEOD")
+#detach(package:devtools,unload = TRUE)
+#install.packages("CHIDEOD_0.8.tar.gz", type = "source")
+
+library(CHIDEOD)
+
+data(package = "CHIDEOD")
+
+chideod # so it worked, the data is now here
+```
+
+
