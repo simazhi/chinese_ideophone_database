@@ -1,0 +1,366 @@
+---
+title: "postprocessing"
+author: "Thomas Van Hoey"
+date: "10/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+library(glue)
+```
+
+
+```{r}
+file <- read_csv(here("finder.results_20191004.csv"), col_names = FALSE) %>%
+  rename(class = X1,
+         article.no = X2,
+         line = X3)  
+```
+
+
+```{r}
+words <- read_csv("list.of.traditional.ideophones.csv") 
+words <- words %>%
+  mutate(traditional = case_when(
+    nchar(traditional) < 2 ~ str_replace(traditional, "(.)", " \\1_"),
+    TRUE ~ traditional
+  )) 
+search.expressions <- pull(words)
+search.2 <- glue_collapse(search.expressions, sep = "|")
+#search.2
+```
+
+
+
+```{r}
+file %>%
+  mutate(ideo = str_extract_all(line,search.2)) %>%
+  #select(t) %>%
+  unnest(ideo) -> file.ideo
+
+```
+
+```{r}
+file.ideo.norm <- file.ideo %>%
+  mutate(ideo = str_replace(ideo, "_", ""),
+         ideo = str_squish(ideo))
+
+write_csv(file.ideo.norm, "ASBC_unnested.csv", col_names = TRUE)
+```
+
+
+# Start from here
+
+```{r}
+file.ideo.norm <- read_csv("ASBC_unnested.csv")
+
+skimr::skim(file.ideo.norm)
+
+file.ideo.norm %>%
+  count(class)
+
+file.ideo.norm %>%
+  count(ideo, sort = TRUE)
+```
+
+Based on the result of `file.ideo %>% count(ideo, sort = TRUE)` it is maybe best to scrutinize a number of the results.
+
+# 得
+
+word | n in ASBC | datasource
+---- | -------- | ---
+得	| 13992 | Li
+
+```{r}
+file.ideo.norm %>% filter(ideo == "得") %>%
+  mutate(de.category = str_extract_all(line, "\\b得_\\w+\\b")) %>%
+  unnest(de.category) %>%
+  count(de.category, sort = TRUE) 
+```
+
+```{r}
+file.ideo.norm %>% filter(ideo == "得") %>%
+  mutate(de.category = str_extract_all(line, "\\b得_\\w+\\b")) %>%
+  unnest(de.category) 
+```
+
+Conclusion: based on its definition in CHIDEOD (from Li 2007) and its multiple grammatical functions, it is better if 得 is excluded from CHIDEOD.
+
+# Sentence final particles
+
+word | n in ASBC | datasource | tag
+---- | --------			| --- | ---
+呢	| 7798			| Wang, Li | T [particle]
+啊	| 4975			| Gong, Li | I & T [interjection, particle]
+吧	| 3581			| Wang, Gong, Li | T
+當	| 	3513			| Gong, Li | D, I, Na, Nes, P, VA, VC, VE, VG, VH, VJ
+台		| 2746			| Li | Na, Nc, Nf
+呀		| 2266	| Wang, Gong, Li | D[is okay] & T[not okay]
+往往	| 1502	|	Kroll | D[maybe grammaticalized?]
+突然	| 1415	| HYDCD | D & V [both grammaticalized?]
+喔	 | 1087	 | Gong | I, T 
+消息	 | 1074	| Kroll | Na[because used to be verbal, now noun 'news']		
+好好	 | 	991	| Shijing | VH, D[both grammaticalized?]
+顯然	 | 	928	| HYDCD | D [okay]
+紛紛	 | 	917		 |  Kroll, Tang 	 | D [gramm/ okay]
+拍		 | 813 | Gong | D, Na, Nv, VC [not ideophone?]
+種種		 | 795 | HYDCD | Neqa, Nf, VC [not ideophone?]
+彷彿	 | 	778	 | Kroll | D, VG [grammaticalized?]
+嗯		 | 738	 | Gong | I 
+漸漸		 | 732	 | Shijing | D [grammaticalized]
+號		 | 688	 | Gong | Na, Nc, Nf, VG
+哦 |	668 | Li | I, T
+忽然 |	658	| Tang | D [okay?]
+念 |	634	| Li | Na, Nv, VB, VC, VJ
+空 |	620	| Gong | D, Na, Nb, Nc, Nv, VC,VH, VHC
+模糊 | 	518	| Kroll | Nv, VH [ok/grammaticalized]
+通 |	483	| Li | D, Na, Neqa, Nf, Nv, VA, VC, VCL, VE, VH, VJ
+深深 | 	469	| HYDCD | VH [ok/grammaticalized]
+東 |	463	| Gong | Nc, Ncd
+果然 |	454	| HYDCD | D [ok/grammaticalized]
+架	| 414 | 
+
+```{r}
+file.ideo.norm %>%
+  count(ideo, sort = TRUE) 
+```
+
+
+```{r}
+library(CHIDEOR)
+
+search.word <- "實實"
+
+chideod %>%
+  filter(traditional == search.word) %>%
+  pull(HYDCD)
+
+chideod %>%
+  filter(traditional == search.word) %>%
+  pull(Kroll)
+
+chideod %>%
+  filter(traditional == search.word) %>%
+  select(datasource)
+```
+
+```{r}
+file.ideo.norm %>% filter(ideo == search.word) %>%
+  mutate(de.category = str_extract_all(line, glue("\\b{search.word}_\\w+\\b"))) %>%
+  unnest(de.category) -> tag.found
+tag.found
+
+tag.found %>%
+  count(de.category)
+
+tag.found %>%
+  filter(str_detect(de.category, "VC"))
+```
+
+# First visualization
+
+```{r}
+library(showtext)
+showtext_auto()
+
+file.ideo.norm %>%
+  count(ideo, sort = TRUE) %>%
+  ggplot() +
+  geom_bar(aes(reorder(ideo, n), n),
+           stat = "identity") +
+  coord_flip()
+  
+```
+
+```{r}
+takeouts <- read_csv("post_procssing_filtering.csv") %>%
+  filter(takeout == "Y")
+
+
+file.ideo.norm %>%
+  anti_join(takeouts, by = c("ideo" = "word")) %>%
+  count(ideo, sort = TRUE) %>%
+  ggplot() +
+  geom_bar(aes(reorder(ideo, n), n),
+           stat = "identity") +
+  coord_flip()
+  
+```
+
+Okay, so a Zipf curve is totally what we would expect in both cases.
+The more frequent ones are also probably more grammaticalized even though they can still be integrated in the verbal complex.
+
+
+# Basic statistics
+
+```{r}
+file.ideo.norm %>% 
+  anti_join(takeouts, by = c("ideo" = "word")) %>%
+  distinct() -> curated.ideos.ASBC
+```
+
+
+## Gries's dispersion
+
+So now we have `r nrow(curated.ideos.ASBC)` observations, I think it's enough.
+
+So now we need to
+* count number of observations per class
+* turn into wider format
+* ~~rename the categories~~
+* make sure the order is the same as the one of totals
+```{r}
+ASBC.ideo.obs <- curated.ideos.ASBC %>%
+  count(class, ideo) %>%
+  arrange(ideo) %>%
+  pivot_wider(names_from = class,
+              values_from = n) 
+ASBC.ideo.obs
+```
+
+ 
+Total frequencies (words)
+哲學	1129554			
+文學	2244729			
+生活	2253121			
+社會	3636877			
+科學	1132392			
+藝術	849182	
+```{r}
+totals.abs <- tribble(
+  ~ 哲學, ~文學, ~生活, ~社會, ~科學, ~藝術,
+  1129554, 2244729, 2253121, 3636877, 1132392, 849182	
+)
+totals.abs
+ASBC4.total.exp <- prop.table(totals.abs)
+ASBC4.total.exp
+```
+
+
+```{r}
+ASBC.ideo.obs %>%
+  replace(is.na(.), 0) %>% # replace the NAs with 0
+  janitor::adorn_percentages() %>% # replaces prop.table
+  mutate(literature = abs(文學 - ASBC4.total.exp$文學),
+         life = abs(生活 - ASBC4.total.exp$生活),
+         society = abs(社會 - ASBC4.total.exp$社會),
+         science = abs(科學 - ASBC4.total.exp$科學),
+         philosophy = abs(哲學 - ASBC4.total.exp$哲學),
+         art = abs(藝術 - ASBC4.total.exp$藝術)) %>%
+  mutate(total = literature + life + society + science + philosophy + art) %>% # totals of the newly computed values
+  mutate(dp = total / 2) %>%
+  as_tibble() %>%
+  select(-literature, -life, -society, -science, -philosophy, -art, -total) -> ASBC.ideo.dispersion
+
+ASBC.ideo.dispersion %>%
+  select(ideo, dp, everything()) %>%
+  arrange(dp) %>%
+  left_join(ASBC.ideo.obs, by = c("ideo")) -> ASBC.ideo.dispersion.raw
+ASBC.ideo.dispersion.raw
+
+```
+
+
+So what is the relation between dispersion and raw frequency?
+
+```{r}
+library(showtext)
+showtext_auto()
+
+ASBC.ideo.dispersion.raw %>%
+  replace(is.na(.), 0) %>%
+  mutate(rawfreq = reduce(select(., ends_with(".y")), `+`)) %>% # summarize over raw frequencies
+  ggplot(aes(dp, rawfreq)) +
+  geom_point() +
+  gghighlight::gghighlight(rawfreq > 250, label_key = ideo) +
+  theme_bw() 
+```
+
+# Frequencies
+
+```{r}
+e <- ecdf(ASBC.ideo.dispersion.raw$dp)
+
+ASBC.ideo.dispersion.raw %>%
+  ggplot(aes(dp)) +
+  #geom_histogram() +
+  stat_ecdf() +
+  theme_bw() +
+  #geom_label(aes(x = e(0.25), y = 0.25),
+  #           label = e(0.25))
+  geom_point(aes(x = e(0.75), y = e(0.75))) +
+  geom_point(aes(x = e(0.50), y = e(0.50))) +
+  geom_point(aes(x = 0.33, y = 0.25))
+
+```
+
+
+# ABB?
+
+```{r}
+curated.ideos.ASBC %>%
+  mutate(ABB = str_extract(line, glue("\\b\\w+{ideo}\\w+\\b"))) %>%
+  drop_na(ABB) %>%
+  mutate(collocate = str_extract(ABB, glue(".+(?={ideo})")))-> ASBC.ABBs
+
+ASBC.ABBs 
+  
+
+ASBC.ABBs %>% count(ideo, sort = TRUE)
+```
+
+```{r}
+ASBC.ABBs %>% count(ideo, ABB, collocate) %>%
+  arrange(ideo)
+```
+
+```{r}
+ASBC.ABBs %>%
+  filter(str_detect(ABB, "黃")) %>%
+  count(ABB, collocate)
+```
+
+Critique on formal studies that typically take only one thing into account.
+This is really fun with colors! 
+黑|白|紅|黃|綠
+
+```{r}
+ASBC.ABBs %>%
+  filter(str_detect(ABB, "油")) %>%
+  count(ABB, collocate)
+```
+
+So yes, unit status, but also yes to (partial) compositionality.
+Against ABB!
+
+# Tags
+
+```{r}
+curated.ideos.ASBC %>%
+  mutate(expression = str_extract(line, glue("\\b\\w*{ideo}\\w+\\b")),
+         tag = str_replace(expression, ".+_", "")) %>%
+  count(tag, sort = TRUE)
+  
+
+```
+
+
+
+# Possible further ideas
+
+Looking at constructions and their association measures
+
+
+
+
+
+
+
+
+
