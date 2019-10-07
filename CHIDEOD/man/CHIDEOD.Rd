@@ -3,7 +3,7 @@
 \docType{data}
 \name{chideod}
 \alias{chideod}
-\title{Descriptive data title}
+\title{The Chinese Ideophone Database (CHIDEOD)}
 \format{a \code{tbl_df} containing the following fields:
 \describe{
 \item{traditional}{}
@@ -72,7 +72,7 @@
 \item{ASBC.art}{}
 }}
 \source{
-The data comes from________________________.
+The data comes from https://osf.io/kpwg.
 }
 \description{
 Detailed description of the data

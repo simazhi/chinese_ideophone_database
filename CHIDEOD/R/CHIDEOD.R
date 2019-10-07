@@ -2,9 +2,9 @@
 #' A data package for CHIDEOD.
 #' @docType package
 #' @aliases CHIDEOD-package
-#' @title Package Title
+#' @title CHIDEOD -- The Chinese Ideophone Database
 #' @name CHIDEOD
-#' @description A description of the data package
+#' @description AThis package contains the Chinese Ideophone Database CHIDEOD.
 #' @details Use \code{data(package='CHIDEOD')$results[, 3]} to see a list of available data sets in this data package
 #'     and/or DataPackageR::load_all
 #' _datasets() to load them.
@@ -18,7 +18,7 @@ NULL
 #' Detailed description of the data
 #' @name chideod
 #' @docType data
-#' @title Descriptive data title
+#' @title The Chinese Ideophone Database (CHIDEOD)
 #' @format a \code{tbl_df} containing the following fields:
 #' \describe{
 #' \item{traditional}{}
@@ -86,7 +86,9 @@ NULL
 #' \item{ASBC.science}{}
 #' \item{ASBC.art}{}
 #' }
-#' @source The data comes from________________________.
+#' @source The data comes from https://osf.io/kpwg.
+#' 
+#' 
 #' @seealso
 #' \link{CHIDEOD}
 NULL
