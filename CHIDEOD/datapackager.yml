@@ -1,8 +1,0 @@
-configuration:
-  files:
-    chinese_database.Rmd:
-      enabled: yes
-  objects:
-  - chideod
-  render_root:
-    tmp: '789407'
