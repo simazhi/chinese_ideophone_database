@@ -26,13 +26,15 @@ Other methods:
 # Set up
 ```{r}
 library(DataPackageR)
+library(here)
+library(tidyverse)
 ```
 
 # Variables
 
 ```{r}
-PATH <- "/Users/Thomas/Google\ Drive/chinese_ideophone_database"
-PACKAGENAME <- "CHIDEOR" #Chinese Ideophone Database R
+PATH <- here()
+PACKAGENAME <- "CHIDEOD" #Chinese Ideophone Database R
 ```
 
 
@@ -44,16 +46,13 @@ library(osfr)
 cr_project <- osf_retrieve_node("kpwgf") # OSF Chinese Ideophone Database
 cr_project %>%
   osf_ls_files() %>%
+  filter(str_detect(name, "rds")) %>%
   osf_download(overwrite = TRUE)
 ```
 
 read in data as df
 ```{r}
-library(readxl)
-library(tidyverse)
-
-df <- read_excel("chideod.xlsx") %>%
-  select(-`...1`)
+df <- read_rds("chideod.rds")
 df
 ```
 
@@ -69,8 +68,13 @@ datapackage_skeleton(name = PACKAGENAME,
 
 # Add raw data to the package.
 ```{r}
-# write our raw data to a csv
-write.csv(x = df,file = file.path(PATH, "chideod.csv"), row.names = FALSE)
+# NOW WITH RDS
+# write our raw data to a csv 
+#write.csv(x = df,file = file.path(PATH, "chideod.csv"), row.names = FALSE)
+
+# write raw data to rds
+write_csv(df, file.path(PATH, "chideod.csv"))
+
 # this works because we called datapackage_skeleton() first.
 use_raw_dataset(file.path(PATH, "chideod.csv"))
 ```
@@ -112,7 +116,7 @@ use_data_object("chideod")
 
 ```{r}
 options("DataPackageR_interact" = FALSE)
-package_build(packageName = file.path(PATH, "CHIDEOR"),
+package_build(packageName = file.path(PATH, "CHIDEOD"),
               install = FALSE)
 ```
 
@@ -127,14 +131,14 @@ File can be found under `data-raw`, the `documentation.R` file
 We’ll fill this in and save the resulting file.
 
 ```
-#' CHIDEOR
+#' CHIDEOD
 #' A data package for CHIDEOD.
 #' @docType package
-#' @aliases CHIDEOR-package
+#' @aliases CHIDEOD-package
 #' @title CHIDEOD -- The Chinese Ideophone Database
-#' @name CHIDEOR
-#' @description This package contains the Chinese Ideophone Database CHIDEOD.
-#' @details Use \code{data(package='CHIDEOR')$results[, 3]} to see a list of available data sets in this data package
+#' @name CHIDEOD
+#' @description AThis package contains the Chinese Ideophone Database CHIDEOD.
+#' @details Use \code{data(package='CHIDEOD')$results[, 3]} to see a list of available data sets in this data package
 #'     and/or DataPackageR::load_all
 #' _datasets() to load them.
 #' @seealso
@@ -203,12 +207,22 @@ NULL
 #' \item{S4.phonfam}{}
 #' \item{sensorymod}{}
 #' \item{variant}{}
-#' \item{datasource}{}
 #' \item{note}{}
+#' \item{datasource}{}
+#' \item{stage}{}
+#' \item{ASBC.dp}{}
+#' \item{ASBC.philosophy}{}
+#' \item{ASBC.literature}{}
+#' \item{ASBC.life}{}
+#' \item{ASBC.society}{}
+#' \item{ASBC.science}{}
+#' \item{ASBC.art}{}
 #' }
 #' @source The data comes from https://osf.io/kpwg.
+#' 
+#' 
 #' @seealso
-#' \link{CHIDEOR}
+#' \link{CHIDEOD}
 NULL
 
 ```
@@ -226,16 +240,16 @@ DataPackageR::document(package_path)
 ## the DESCRIPTION file
 
 ```
-Package: CHIDEOR
-Title: What the Package Does (One Line, Title Case)
-Version: 1.0
+Package: CHIDEOD
+Title: Data package containing the Chinese Ideophone Database
+Version: 0.8
 Authors@R: 
     person(given = "Thomas",
            family = "Van Hoey",
            role = c("aut", "cre"),
            email = "thomas_van_hoey@hotmail.com")
 Description: This package contains the contents of the Chinese Ideophone Database CHIDEOD.
-License: What license it uses
+License: GNU General Public License v2.0
 Encoding: UTF-8
 LazyData: true
 DataVersion: 0.5.0
@@ -256,6 +270,7 @@ DataPackageR::document(package_path)
 
 
 
+
 # A final build.
 
 ```{r}
@@ -266,12 +281,13 @@ package_build(file.path(PATH, PACKAGENAME))
 
 ```{r}
 library(devtools)
-install_github("simazhi/chinese_ideophone_database/CHIDEOR")
+install_github("simazhi/chinese_ideophone_database/CHIDEOD")
 #detach(package:devtools,unload = TRUE)
+#install.packages("CHIDEOD_0.8.tar.gz", type = "source")
 
-library(CHIDEOR)
+library(CHIDEOD)
 
-data(package = "CHIDEOR")
+data(package = "CHIDEOD")
 
 chideod # so it worked, the data is now here
 ```
