@@ -1,0 +1,84 @@
+---
+title: "Adding HYDC to CHIDEOD"
+author: "Thomas Van Hoey"
+date: "10/2/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(CHIDEOR)
+#chideod 
+library(tidyverse)
+#hydc <- read_csv("/Users/Thomas/Google\ Drive/hydcd/hanyudacidian-csv.zip")
+```
+
+
+
+```{r}
+#chideod
+
+chideod %>% 
+  #top_n(50) %>%
+  #select(traditional, HYDCD, datasource) %>%
+  mutate(hanyu = case_when(nchar(HYDCD) > 0 ~ "HYDCD",
+                           TRUE ~ "NA"
+  )) %>%
+  pivot_longer(cols = c(datasource, hanyu),
+               names_to = "test") %>%
+  filter(value != "NA") %>%
+  rename(datasource = value) %>%
+  select(-test) %>%
+  mutate(datasource = case_when(
+    datasource == "HYDCDmao-sheng" ~ "HYDCD",
+    TRUE ~ datasource
+  )) %>%
+  distinct() %>%
+  mutate(stage = case_when(
+    datasource == "Gong" ~ "MA",
+    datasource == "Li" ~ "MA",
+    datasource == "Wang" ~ "MA",
+    datasource == "Kroll" ~ "OC-MC",
+    datasource == "Shijing" ~ "OC",
+    datasource == "Tang" ~ "MC",
+    datasource == "HYDCD" ~ "OC-MC-MA"
+  )) %>%
+  distinct() -> chideod.updated
+
+chideod.updated
+
+```
+
+```{r}
+takeouts <- read_csv("post_procssing_filtering.csv")
+
+chideod.updated %>%
+  
+```
+
+
+
+```{r}
+chideod.updated %>%
+  select(datasource) %>%
+  #distinct() %>%
+  count(datasource)
+
+chideod%>%
+  select(datasource) %>%
+  #distinct() %>%
+  count(datasource)
+```
+
+
+```{r}
+chideod.updated %>%
+  select(traditional) %>%
+  distinct() %>%
+  write_csv(here::here("list.of.traditional.ideophones.csv"))
+```
+
+
