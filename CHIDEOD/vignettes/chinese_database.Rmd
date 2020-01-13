@@ -1,7 +1,7 @@
 ---
 title: Process OSF repository data into datapackage
 author: Thomas Van Hoey
-date: 8 July, 2019
+date: 13 January, 2020
 output_format: html_document
 vignette: >
   %\VignetteIndexEntry{Process OSF repository data into datapackage}
@@ -12,3 +12,4 @@ vignette: >
 ```{r}
 chideod <- df
 ```
+
