@@ -1,0 +1,633 @@
+---
+title: "revision"
+author: "Thomas Van Hoey"
+date: "12/9/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(CHIDEOD)
+library(tidyverse)
+library(here)
+library(data.table)
+```
+
+
+
+# Step 1
+check 
+* note (for interjection),
+* Kroll (for spelling mistakes)
+
+
+```{r}
+chideod %>%
+  select(traditional, pinyinnum, note, HYDCD, zdic, Kroll) %>%
+  mutate(meaning = "") %>% 
+  arrange(desc(note, traditional)) %>%
+  distinct() #%>%
+  #write_csv(here::here("revision", "interjection.csv"))
+```
+
+Ok, I have manually checked this.
+
+```{r}
+krollupdated <- read_csv(here("revision",
+                              "interjection20191209.csv"))
+krollupdated %>%
+  select(traditional, note, Kroll) %>%
+  distinct() -> kroll.note.updated
+kroll.note.updated
+```
+
+
+# Step 2
+
+Get all zdic definitions (a lot were "notchecked")
+
+* zdic
+
+I gathered this in a separate script.
+
+```{r}
+zdics <- read_csv(here("zdic", "zdicwords_20191213.csv"), col_names = FALSE) %>%
+  rename(number = X1,
+         def = X2,
+         ideo = X3)
+zdics %>%
+  unite(definition, number, def, 
+         sep = " ") %>%
+  group_by(ideo) %>%
+  summarise(definition = str_c(definition, 
+                               collapse = "; ")) %>%
+  mutate(definition = str_replace_all(definition, "\r|\n|\t", " ")) %>%
+  rename(zdic2 = definition) %>%
+  distinct() -> zdic.updated
+zdic.updated
+```
+
+
+OK.
+
+
+# Step 3
+
+merge into old table
+
+* Kroll
+* note
+* zdic
+
+```{r}
+chideod %>%
+  select(-Kroll, -note) %>%
+  left_join(kroll.note.updated, by = "traditional") %>%
+  left_join(zdic.updated, by = c("traditional" = "ideo")) %>%
+  mutate(zdic = case_when(
+    is.na(zdic2) == FALSE ~ zdic2,
+    TRUE ~ zdic
+  )) %>%
+  select(-zdic2) %>%
+  distinct() -> chideod.kroll.note.zdic
+```
+
+* interjection column
+
+```{r}
+chideod.kroll.note.zdic %>%
+  mutate(interjection = case_when(
+    str_detect(note, "interjection") ~ "interjection",
+    TRUE ~ "notinterjection")) -> chideod.interjection
+
+# chideod.interjection  %>%
+#   count(traditional, interjection) %>%
+#   count(interjection)
+```
+
+
+# Step 4
+
+## Sensory imagery
+
+* tidy sensory imagery
+```{r}
+chideod.interjection %>%
+  separate_rows(sensorymod, 
+           sep = "\\+") %>%
+  mutate(sensory_imagery = case_when(
+    sensorymod == "EVALUATIVE" ~ "EVALUATION",
+    sensorymod == "FEELING" ~ "INNER_FEELINGS",
+    sensorymod == "INNERFEELINGS" ~ "INNER_FEELINGS",
+    sensorymod == "TACTILE" ~ "TEXTURE",
+    sensorymod == "WETNESS" ~ "TEXTURE",
+    TRUE ~ sensorymod
+  )) -> chideod.sensory.imagery
+
+
+```
+
+This is the step that needs to be merged with the following two sets.
+
+## Middle Chinese in ipa
+
+* ipa of Middle Chinese
+
+get T1 to T4
+pivot_longer
+connect to baxtesagart dataset
+merge together
+
+
+```{r}
+library(baxteRsagaRt)
+baxtersagart
+```
+
+```{r}
+chideod.sensory.imagery %>%
+  select(T1:T4, traditional) %>%
+  rowid_to_column() %>%
+  pivot_longer(cols = starts_with("T", ignore.case = FALSE),
+               names_to = "Tval") %>%
+  left_join(baxtersagart, by = c("value" = "traditional")) %>%
+  select(rowid, Tval, value, MCbaxter, MCipa, OC, traditional)  %>%
+  distinct() -> chideod.mc1
+
+chideod.mc1 
+ # drop_na(MCbaxter)
+```
+
+Function I stole from here for faster unnesting: https://www.johannesbgruber.eu/post/a-faster-unnest/
+```{r}
+unnest_dt2 <- function(tbl, ...) {
+
+  tbl <- as.data.table(tbl)
+
+  col <- ensyms(...)
+
+  clnms <- syms(setdiff(colnames(tbl), as.character(col)))
+
+  tbl <- as.data.table(tbl)
+
+  tbl <- eval(
+    expr(tbl[, lapply(.SD, unlist), by = list(!!!clnms), .SDcols = as.character(col)])
+  )
+  
+  colnames(tbl) <- c(as.character(clnms), as.character(col))
+
+  tbl
+}
+```
+
+
+
+```{r}
+chideod.mc1 %>%
+  pivot_wider(names_from = Tval,
+              values_from = c(MCbaxter:OC)
+              ) %>%
+  unnest_dt2(MCbaxter_T1, MCbaxter_T2, MCbaxter_T3, MCbaxter_T4,
+             MCipa_T1, MCipa_T2, MCipa_T3, MCipa_T4,
+             OC_T1, OC_T2, OC_T3, OC_T4) %>% 
+  as_tibble() %>%
+  #unnest() %>% #tidyr::unnest was really slow, so I used a data.table trick
+  mutate(MCbaxter = glue::glue("{MCbaxter_T1}~{MCbaxter_T2}~{MCbaxter_T3}~{MCbaxter_T4}"),
+         MCipa = glue::glue("{MCipa_T1}~{MCipa_T2}~{MCipa_T3}~{MCipa_T4}"),
+         OCipa = glue::glue("{OC_T1}~{OC_T2}~{OC_T3}~{OC_T4}")) %>%
+  mutate(OCipa = str_remove_all(OCipa, "\\*")) %>%
+  select(rowid, traditional, MCbaxter, MCipa, OCipa) -> chideod.mc
+```
+
+```{r}
+chideod.mc %>%
+  select(-rowid) %>%
+  distinct() %>%
+  mutate (nacheck = case_when(
+    MCbaxter == "NA~NA~NA~NA" ~ "notfound",
+    TRUE ~ "ok"
+  )) %>% # okay first take out the multiple options that are 4 NAs
+  ungroup() %>%
+  mutate(traditional.dup =ifelse(duplicated(traditional) | duplicated(traditional, fromLast = TRUE), "dup","sing")) %>%
+  group_by(traditional) %>%
+  filter(!(traditional == "dup") & !(nacheck == "notfound")) %>%
+  select(-nacheck, -traditional.dup) %>%
+  # now we remove excessives NAs for three, two and one syllable words
+  mutate(MCbaxter = as.character(MCbaxter),
+         MCipa = as.character(MCipa),
+         OCipa = as.character(OCipa)) %>%
+  mutate(MCbaxter = case_when(
+    nchar(traditional) == 1 ~ str_remove(MCbaxter, "~NA~NA~NA$"),
+    nchar(traditional) == 2 ~ str_remove(MCbaxter, "~NA~NA$"),
+    nchar(traditional) == 3 ~ str_remove(MCbaxter, "~NA$"),
+    TRUE ~ MCbaxter
+  )) %>%
+  mutate(MCipa = case_when(
+    nchar(traditional) == 1 ~ str_remove(MCipa, "~NA~NA~NA$"),
+    nchar(traditional) == 2 ~ str_remove(MCipa, "~NA~NA$"),
+    nchar(traditional) == 3 ~ str_remove(MCipa, "~NA$"),
+    TRUE ~ MCipa
+  )) %>%
+  mutate(OCipa = case_when(
+    nchar(traditional) == 1 ~ str_remove(OCipa, "~NA~NA~NA$"),
+    nchar(traditional) == 2 ~ str_remove(OCipa, "~NA~NA$"),
+    nchar(traditional) == 3 ~ str_remove(OCipa, "~NA$"),
+    TRUE ~ OCipa
+  )) -> chideod.mc.noduplicates
+
+```
+
+**I think it is important to keep a lot of variation in and uncertainty for the reconstructions.**
+It is up to the person that uses CHIDEOD to look at this data and make educated guesses.
+
+
+
+## Mandarin ipa
+
+* ipa of Mandarin
+
+python
+dragonmapper
+
+from dragonmapper import transcriptions
+dragonmapper.transcriptions.pinyin_to_ipa(s)
+
+
+```{r}
+chideod.sensory.imagery %>%
+  select(pinyintone) %>%
+  pull() %>%
+  str_replace_all("~", " ") -> pinyintones
+```
+
+
+
+```{r}
+library(CLD)
+cld %>%
+  select(C1Pinyin:C4Pinyin) %>%
+  pivot_longer(cols = everything(),
+               names_to = "cpinyin",
+               values_to = "pinyin") -> cld.ipa
+
+cld %>%
+  select(C1IPA:C4IPA) %>%
+  pivot_longer(cols = everything(),
+               names_to = "cipa",
+               values_to = "ipa") %>%
+  cbind(cld.ipa) %>%
+  select(pinyin, ipa) %>%
+  distinct() %>%
+  drop_na()  -> pinyin.ipa.corr
+
+chideod.sensory.imagery %>%
+  select(pinyinnum) %>%
+  separate(pinyinnum,
+           into = c("s1", "s2", "s3", "s4")) %>%
+  stack() %>%
+  select(-ind) %>%
+  distinct() %>%
+  left_join(pinyin.ipa.corr, by = c("values" = "pinyin")) %>%
+  mutate(ipanotone = str_remove(ipa, "\\d"),
+         valuetonenumber = str_extract(values, "\\d"),
+         valuenotone = str_remove(values, "\\d"),
+         ipanumber =str_extract(ipa, "\\d")) %>% 
+  select(values, valuenotone, valuetonenumber,
+         ipa, ipanotone, ipanumber) %>%
+  mutate(ipanumber = case_when(
+    is.na(ipanumber) ~ valuetonenumber,
+    TRUE ~ ipanumber
+  ))  -> pinyin.ipa.corr.updated
+
+#write_csv(pinyin.ipa.corr.updated,
+#          here("revision", "pinyin.ipa.list.csv"),
+#          col_names = TRUE)
+```
+
+This we correct
+
+```{r}
+pinyin.ipa.corr.updated <- read_csv(here("revision", "pinyin.ipa.list.csv"),
+                                    col_names = TRUE) 
+
+pinyin.ipa.corr.updated %>%
+  select(values, ipanotone, ipanumber) %>%
+  mutate(ipanumber = as.character(ipanumber)) %>%
+  mutate(tonenumber = case_when( ipanumber == "1" ~ "55", # tonenumber
+      ipanumber == "2" ~ "35",
+      ipanumber == "3" ~ "214",
+      ipanumber == "4" ~ "51",
+      ipanumber == "5" ~ ""),
+    toneletter = case_when(ipanumber == "1" ~ "˥",     # toneletter
+      ipanumber == "2" ~ "˧˥",
+      ipanumber == "3" ~ "˨˩˦",
+      ipanumber == "4" ~ "˥˩",
+      ipanumber == "5" ~ "")) %>%
+  #uniting
+  mutate(ipatoneletter = as.character(glue::glue("{ipanotone}{toneletter}")),
+         ipatonenumber = as.character(glue::glue("{ipanotone}{tonenumber}"))) %>%
+  select(values, ipatoneletter, ipatonenumber) %>%
+  rename(pinyin = values) -> pinyin.ipa.corr
+```
+
+
+
+```{r}
+chideod.sensory.imagery %>%
+  select(pinyinnum) %>%
+  separate(pinyinnum,
+           into = c("s1", "s2", "s3", "s4")) %>%
+  # adding the ipa
+  left_join(pinyin.ipa.corr, by = c("s1" = "pinyin")) %>%
+  rename(ipatoneletter1 = ipatoneletter, ipatonenumber1 = ipatonenumber) %>%
+  left_join(pinyin.ipa.corr, by = c("s2" = "pinyin")) %>%
+  rename(ipatoneletter2 = ipatoneletter, ipatonenumber2 = ipatonenumber) %>%
+  left_join(pinyin.ipa.corr, by = c("s3" = "pinyin")) %>%
+  rename(ipatoneletter3 = ipatoneletter, ipatonenumber3 = ipatonenumber) %>%
+  left_join(pinyin.ipa.corr, by = c("s4" = "pinyin")) %>%
+  rename(ipatoneletter4 = ipatoneletter, ipatonenumber4 = ipatonenumber) %>%
+  # uniting the columns
+  unite(col = ipa_toneletter,
+        contains("letter"),
+        sep = "~") %>%
+  unite(col = ipa_tonenumber,
+        contains("number"),
+        sep = "~") %>%
+  mutate(ipa_toneletter = case_when(
+    str_detect(ipa_toneletter, "~NA~NA~NA$") ~ str_remove(ipa_toneletter, "~NA~NA~NA$"),
+    str_detect(ipa_toneletter, "~NA~NA$") ~ str_remove(ipa_toneletter, "~NA~NA$"),
+    str_detect(ipa_toneletter, "~NA$") ~ str_remove(ipa_toneletter, "~NA$"),
+    TRUE ~ ipa_toneletter
+    )) %>%
+  mutate(ipa_tonenumber = case_when(
+    str_detect(ipa_tonenumber, "~NA~NA~NA$") ~ str_remove(ipa_tonenumber, "~NA~NA~NA$"),
+    str_detect(ipa_tonenumber, "~NA~NA$") ~ str_remove(ipa_tonenumber, "~NA~NA$"),
+    str_detect(ipa_tonenumber, "~NA$") ~ str_remove(ipa_tonenumber, "~NA$"),
+    TRUE ~ ipa_tonenumber
+  )) -> chideod.ipa.okay
+
+
+```
+
+
+## Merging everyhing together
+
+```{r}
+chideod.sensory.imagery %>%
+  cbind(ipa_toneletter = chideod.ipa.okay$ipa_toneletter) %>%
+  cbind(ipa_tonenumber = chideod.ipa.okay$ipa_tonenumber) %>%
+  left_join(chideod.mc.noduplicates, by = "traditional") -> chideod.ipas.Mand.MC.OC
+```
+
+
+# Step 5
+
+Turning the different meaning columns into one "definition" column
+* Kroll
+* HYDCD
+* zdic
+
+
+```{r}
+chideod.ipas.Mand.MC.OC %>%
+  pivot_longer(cols = c(HYDCD, Kroll, zdic),
+               names_to = "test",
+               values_to = "definitions") %>%
+  select(-test) %>%
+  distinct() %>%
+  filter(!str_detect(traditional, "呣")) %>%
+  select(-MC, -OC, -sensorymod) %>%
+  rename(pinyin_tone = pinyintone,
+         pinyin_tonenumber = pinyinnum,
+         pinyin_without_tone = pinyinnone,
+         radical_support = radsup,
+         simplified1 = S1,
+         simplified2 = S2,
+         simplified3 = S3,
+         simplified4 = S4,
+         traditional1 = T1,
+         traditional2 = T2,
+         traditional3 = T3,
+         traditional4 = T4,
+         morphological_template = morphology,
+         character1_freq = S1.charfreq,
+         character2_freq = S2.charfreq,
+         character3_freq = S3.charfreq,
+         character4_freq = S4.charfreq,
+         character1_family_size = S1.famfreq,
+         character2_family_size = S2.famfreq,
+         character3_family_size = S3.famfreq,
+         character4_family_size = S4.famfreq,
+         character1_semantic_radical = S1.sem,
+         character2_semantic_radical = S2.sem,
+         character3_semantic_radical = S3.sem,
+         character4_semantic_radical = S4.sem,
+         character1_semantic_radical_freq = S1.semfreq,
+         character2_semantic_radical_freq = S2.semfreq,
+         character3_semantic_radical_freq = S3.semfreq,
+         character4_semantic_radical_freq = S4.semfreq,
+         character1_semantic_family_size = S1.semfam,
+         character2_semantic_family_size = S2.semfam,
+         character3_semantic_family_size = S3.semfam,
+         character4_semantic_family_size = S4.semfam,
+         character1_phonetic_component = S1.phon,
+         character2_phonetic_component = S2.phon,
+         character3_phonetic_component = S3.phon,
+         character4_phonetic_component = S4.phon,
+         character1_phonetic_component_freq = S1.phonfreq,
+         character2_phonetic_component_freq = S2.phonfreq,
+         character3_phonetic_component_freq = S3.phonfreq,
+         character4_phonetic_component_freq = S4.phonfreq,
+         character1_phonetic_family_size = S1.phonfam,
+         character2_phonetic_family_size = S2.phonfam,
+         character3_phonetic_family_size = S3.phonfam,
+         character4_phonetic_family_size = S4.phonfam,
+         orthograpic_variants = variant,
+         data_source = datasource,
+         language_stage = stage,
+         middle_chinese_baxter = MCbaxter,
+         middle_chinese_ipa = MCipa,
+         old_chinese_ipa = OCipa
+         ) %>%
+  select(traditional, simplified, 
+         pinyin_tone, pinyin_tonenumber, pinyin_without_tone,
+         ipa_toneletter, ipa_tonenumber,
+         middle_chinese_baxter, middle_chinese_ipa,
+         old_chinese_ipa,
+         language_stage, data_source,
+         definitions,
+         starts_with("simplified"),
+         starts_with("traditional"),
+         morphological_template,
+         radical_support,
+         starts_with("character"),
+         interjection,
+         sensory_imagery,
+         everything()
+         ) -> chideod.almost.finished # renaming
+```
+
+Oh 3th and 4th column needs to be checked
+(probably conversion problems at one point)
+
+```{r}
+chideod.almost.finished
+```
+
+
+```{r}
+cld %>%
+  select(S1:S4) %>%
+  pivot_longer(everything(), #names_to = "var", 
+               values_to = "simp") -> cld.s
+
+cld %>%
+  select(C1Frequency:C4Frequency) %>%
+  pivot_longer(everything(),
+               values_to = "freq") -> cld.frequency
+
+cld %>%
+  select(C1FamilySize:C4FamilySize) %>%
+    pivot_longer(everything(),
+               values_to = "famsize") -> cld.famsize
+
+cld %>%
+  select(C1SR:C4SR) %>%
+  pivot_longer(everything(),
+               values_to = "semrad") -> cld.semrad
+
+cld %>%
+  select(C1SRFrequency:C4SRFrequency) %>%
+  pivot_longer(everything(),
+               values_to = "semfreq") -> cld.semfreq
+
+
+cld %>%
+  select(C1SRFamilySize:C4SRFamilySize) %>%
+  pivot_longer(everything(),
+               values_to = "semfamsize") -> cld.semfamsize
+
+cld %>%
+  select(C1PR:C4PR) %>%
+  pivot_longer(everything(),
+               values_to = "phon") -> cld.phoneticcomponent
+
+cld %>%
+  select(C1PRFrequency:C4PRFrequency) %>%
+  pivot_longer(everything(),
+               values_to = "phonfreq")  -> cld.phoneticcomponent.freq
+
+cld %>%
+  select(C1PRFamilySize:C4PRFamilySize) %>%
+  pivot_longer(everything(),
+               values_to = "phonfam")  -> cld.phoneticfamily
+
+cld.extracted <-  bind_cols(cld.s, cld.frequency, cld.famsize, 
+      cld.semrad, cld.semfreq, cld.semfamsize,
+      cld.phoneticcomponent, cld.phoneticcomponent.freq, cld.phoneticfamily) %>%
+  distinct()
+
+cld.extracted %>%
+  select(-starts_with("name")) %>%
+  distinct() %>%
+  drop_na() -> cld.extracted.measures
+
+write_csv(cld.extracted.measures, here("interesting_lists", "cld.extractedmeasures.csv"), col_names = TRUE)
+
+cld.extracted.measures
+```
+
+
+```{r}
+chideod.almost.finished %>%
+  left_join(cld.extracted.measures, by = c("simplified1" = "simp")) %>%
+  mutate(character1_freq = freq,
+         character1_family_size = famsize,
+         character1_semantic_radical = semrad,
+         character1_semantic_radical_freq = semfreq,
+         character1_semantic_family_size = semfamsize,
+         character1_phonetic_component = phon, 
+         character1_phonetic_component_freq = phonfreq,
+         character1_phonetic_family_size = phonfam) %>%
+  select(-freq:-phonfam) %>%
+  left_join(cld.extracted.measures, by = c("simplified2" = "simp")) %>%
+  mutate(character2_freq = freq,
+         character2_family_size = famsize,
+         character2_semantic_radical = semrad,
+         character2_semantic_radical_freq = semfreq,
+         character2_semantic_family_size = semfamsize,
+         character2_phonetic_component = phon, 
+         character2_phonetic_component_freq = phonfreq,
+         character2_phonetic_family_size = phonfam) %>%
+  select(-freq:-phonfam) %>%
+  left_join(cld.extracted.measures, by = c("simplified3" = "simp")) %>%
+  mutate(character3_freq = freq,
+         character3_family_size = famsize,
+         character3_semantic_radical = semrad,
+         character3_semantic_radical_freq = semfreq,
+         character3_semantic_family_size = semfamsize,
+         character3_phonetic_component = phon, 
+         character3_phonetic_component_freq = phonfreq,
+         character3_phonetic_family_size = phonfam) %>%
+  select(-freq:-phonfam) %>%
+  left_join(cld.extracted.measures, by = c("simplified4" = "simp")) %>%
+  mutate(character4_freq = freq,
+         character4_family_size = famsize,
+         character4_semantic_radical = semrad,
+         character4_semantic_radical_freq = semfreq,
+         character4_semantic_family_size = semfamsize,
+         character4_phonetic_component = phon, 
+         character4_phonetic_component_freq = phonfreq,
+         character4_phonetic_family_size = phonfam) %>%
+  select(-freq:-phonfam) %>%
+  distinct() -> chideod.finished.almost
+```
+
+# After shortly discussing with Arthur
+
+```{r}
+# the ASBC frequency measures as a separate list
+# chideod.almost.finished %>%
+#   mutate(language_stage = str_replace(language_stage, "MA", "SC")) %>%
+#   select(traditional, contains("ASBC")) %>%
+#   distinct() %>%
+#   write_csv(here("interesting_lists", "ASBC_dp.csv"),
+#             col_names = TRUE)
+  
+
+# without ASBC
+chideod.almost.finished %>%
+  mutate(language_stage = str_replace(language_stage, "MA", "SC")) %>%
+  mutate(pinyin_without_tone = as.character(pinyin_without_tone)) %>%
+  mutate(ipa_toneletter = as.character(ipa_toneletter)) %>%
+  mutate(ipa_tonenumber = as.character(ipa_tonenumber)) %>%
+  select(-contains("ASBC")) %>%
+  distinct() -> chideod.finished
+
+chideod.finished %>%
+  count(sensory_imagery)
+```
+
+
+
+# FINAL OUTPUT
+
+13 January 2020
+
+```{r}
+library(writexl)
+
+chideod.finished %>%
+  count(simplified)
+
+write_rds(chideod.finished, here("revision", "chideod.revised.rds")) 
+write_xlsx(chideod.finished, here("revision", "chideod.revised.xlsx"), col_names = TRUE) 
+write_csv(chideod.finished, here("revision", "chideod.revised.csv"), col_names = TRUE) 
+
+skimr::skim(chideod.finished)
+```
+
+
