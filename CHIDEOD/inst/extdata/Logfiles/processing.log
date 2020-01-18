@@ -1,33 +1,32 @@
-TRACE [2020-01-13 14:37:21] Logging to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/inst/extdata/Logfiles/processing.log
-TRACE [2020-01-13 14:37:21] Processing data
-TRACE [2020-01-13 14:37:21] Reading yaml configuration
-TRACE [2020-01-13 14:37:21] Found /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
-TRACE [2020-01-13 14:37:21] Processing 1 of 1: /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
+TRACE [2020-01-18 13:30:01] Logging to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/inst/extdata/Logfiles/processing.log
+TRACE [2020-01-18 13:30:01] Processing data
+TRACE [2020-01-18 13:30:01] Reading yaml configuration
+TRACE [2020-01-18 13:30:01] Found /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
+TRACE [2020-01-18 13:30:01] Processing 1 of 1: /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
 
-TRACE [2020-01-13 14:37:22] 1 data set(s) created by chinese_database.Rmd
-TRACE [2020-01-13 14:37:24] NEWS.md file not found, creating!
-TRACE [2020-01-13 14:37:24] NEWS.md file found, updating!
-TRACE [2020-01-13 14:37:24] Saving to data
-TRACE [2020-01-13 14:37:26] Copied documentation to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/R/CHIDEOD.R
-TRACE [2020-01-13 14:37:26] Done
-TRACE [2020-01-13 14:37:26] DataPackageR succeeded
-TRACE [2020-01-13 14:37:26] Building documentation
-TRACE [2020-01-13 14:37:27] Building package
-TRACE [2020-01-13 14:39:44] Rebuilding data package documentation.
-TRACE [2020-01-13 14:41:37] Rebuilding data package documentation.
-TRACE [2020-01-13 14:41:59] Rebuilding data package documentation.
-TRACE [2020-01-13 14:42:40] Logging to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/inst/extdata/Logfiles/processing.log
-TRACE [2020-01-13 14:42:40] Processing data
-TRACE [2020-01-13 14:42:40] Reading yaml configuration
-TRACE [2020-01-13 14:42:40] Found /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
-TRACE [2020-01-13 14:42:40] Processing 1 of 1: /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
+TRACE [2020-01-18 13:30:02] 1 data set(s) created by chinese_database.Rmd
+TRACE [2020-01-18 13:30:04] NEWS.md file not found, creating!
+TRACE [2020-01-18 13:30:04] NEWS.md file found, updating!
+TRACE [2020-01-18 13:30:04] Saving to data
+TRACE [2020-01-18 13:30:05] Copied documentation to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/R/CHIDEOD.R
+TRACE [2020-01-18 13:30:05] Done
+TRACE [2020-01-18 13:30:05] DataPackageR succeeded
+TRACE [2020-01-18 13:30:05] Building documentation
+TRACE [2020-01-18 13:30:07] Building package
+TRACE [2020-01-18 13:33:52] Rebuilding data package documentation.
+TRACE [2020-01-18 13:35:27] Rebuilding data package documentation.
+TRACE [2020-01-18 13:35:44] Logging to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/inst/extdata/Logfiles/processing.log
+TRACE [2020-01-18 13:35:44] Processing data
+TRACE [2020-01-18 13:35:44] Reading yaml configuration
+TRACE [2020-01-18 13:35:44] Found /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
+TRACE [2020-01-18 13:35:44] Processing 1 of 1: /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/data-raw/chinese_database.Rmd
 
-TRACE [2020-01-13 14:42:41] 1 data set(s) created by chinese_database.Rmd
-TRACE [2020-01-13 14:42:43] NEWS.md file found, updating!
-TRACE [2020-01-13 14:42:43] Data hasn't changed but the DataVersion has been bumped.
-TRACE [2020-01-13 14:42:43] Saving to data
-TRACE [2020-01-13 14:42:45] Copied documentation to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/R/CHIDEOD.R
-TRACE [2020-01-13 14:42:45] Done
-TRACE [2020-01-13 14:42:45] DataPackageR succeeded
-TRACE [2020-01-13 14:42:45] Building documentation
-TRACE [2020-01-13 14:42:47] Building package
+TRACE [2020-01-18 13:35:45] 1 data set(s) created by chinese_database.Rmd
+TRACE [2020-01-18 13:35:47] NEWS.md file found, updating!
+TRACE [2020-01-18 13:35:47] Data hasn't changed but the DataVersion has been bumped.
+TRACE [2020-01-18 13:35:47] Saving to data
+TRACE [2020-01-18 13:35:48] Copied documentation to /Users/Thomas/googledrive/chinese_ideophone_database/CHIDEOD/R/CHIDEOD.R
+TRACE [2020-01-18 13:35:48] Done
+TRACE [2020-01-18 13:35:48] DataPackageR succeeded
+TRACE [2020-01-18 13:35:48] Building documentation
+TRACE [2020-01-18 13:35:50] Building package

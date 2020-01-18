@@ -14,11 +14,12 @@ NULL
 
 
 
+
 #' Detailed description of the data
 #' @name chideod
 #' @docType data
 #' @title Descriptive data title
-#' @format a \code{tbl_df} containing the following fields:
+#' @format a \code{data.frame} containing the following fields:
 #' \describe{
 #' \item{traditional}{}
 #' \item{simplified}{}
@@ -31,12 +32,6 @@ NULL
 #' \item{middle_chinese_ipa}{}
 #' \item{old_chinese_ipa}{}
 #' \item{language_stage}{}
-#' \item{data_source}{}
-#' \item{definitions}{}
-#' \item{simplified1}{}
-#' \item{simplified2}{}
-#' \item{simplified3}{}
-#' \item{simplified4}{}
 #' \item{traditional1}{}
 #' \item{traditional2}{}
 #' \item{traditional3}{}
@@ -79,8 +74,10 @@ NULL
 #' \item{sensory_imagery}{}
 #' \item{orthograpic_variants}{}
 #' \item{note}{}
+#' \item{data_source}{}
+#' \item{definitions}{}
 #' }
-#' @source The data comes from https://osf.io/kpwg.
+#' @source  The data comes from https://osf.io/kpwg.
 #' @seealso
 #' \link{CHIDEOD}
 NULL
