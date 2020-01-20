@@ -1,0 +1,63 @@
+---
+title: "chideod9.2"
+author: "Thomas Van Hoey"
+date: "1/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(here)
+library(tidyverse)
+library(CHIDEOD)
+```
+
+# Problems
+
+* datasource coverage error
+
+I am solving this with filters
+
+* oops I deleted Simplified1-4
+
+No biggie, we can separate.
+
+
+```{r}
+# chideod %>%
+#   count(data_source, language_stage)
+
+chideod %>%
+  mutate(language_stage = case_when(
+    str_detect(data_source, "Li|Wang|Gong") ~ "SC",
+    str_detect(data_source, "Kroll") ~ "OC-MC",
+    str_detect(data_source, "Shijing") ~ "OC",
+    str_detect(data_source, "Tang") ~ "MC",
+    str_detect(data_source, "HYDCD") ~ "OC-MC-SC"
+)) %>%
+  distinct() -> chideod.coverage
+```
+
+```{r}
+chideod.coverage %>%
+  mutate(simplified1 = str_extract(simplified, "^."),
+         simplified2 = str_extract(simplified, "(?<=^.)."),
+         simplified3 = str_extract(simplified, "(?<=^..)."),
+         simplified4 = str_extract(simplified, "(?<=^...).")) %>%
+  select(traditional, simplified, contains("tone"), contains("middle"),
+         contains("old"), language_stage, data_source, 
+         contains("traditional"), contains("simplified"),
+         sensory_imagery, definitions, orthograpic_variants,
+         everything()) -> chideod9.2
+```
+
+```{r}
+library(writexl)
+write_rds(chideod9.2, here("revision", "chideod.rds")) 
+write_xlsx(chideod9.2, here("revision", "chideod.xlsx"), col_names = TRUE) 
+write_csv(chideod9.2, here("revision", "chideod.csv"), col_names = TRUE) 
+```
+

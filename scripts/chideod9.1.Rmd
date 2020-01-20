@@ -1,0 +1,251 @@
+---
+title: "Untitled"
+author: "Thomas Van Hoey"
+date: "1/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(CHIDEOD) 
+library(here)
+```
+
+# Problem 1: `data_source` and `definitions`
+
+```{r}
+chideod %>%
+  filter(traditional == "徬徨") %>%
+  select(traditional, data_source, definitions) -> chideod.sample
+
+chideod.sample %>%
+  distinct() %>%
+  pivot_wider(id_cols = traditional, names_from = data_source, values_from = definitions) %>%
+  unnest(cols = c(Kroll, HYDCD))
+  
+```
+
+--- 
+
+interjection
+
+```{r}
+interjection <- read_csv(here("revision",
+                              "interjection20191209.csv"))
+interjection %>%
+  #filter(traditional == "徬徨") %>%
+  select(traditional,HYDCD, zdic, Kroll) -> interjection.sample
+
+interjection.sample %>%
+  pivot_longer(-traditional) %>%
+  distinct() -> interjection.longer
+```
+
+```{r}
+chideod %>%
+  select(traditional, data_source)  %>%
+  distinct() %>%
+  filter(str_detect(data_source, "Gong|Wang|Li|Tang|Shijing")) %>%
+  full_join(interjection.longer, by = c("traditional", "data_source" = "name")) %>%
+  rename(definitions = value) %>%
+  filter(!(data_source == "Kroll" & is.na(definitions))) %>%
+  filter(!(data_source == "HYDCD" & is.na(definitions))) %>%
+  filter(!(data_source == "zdic" & is.na(definitions))) %>%
+  distinct() -> chideod.def.fixed
+```
+
+```{r}
+chideod %>%
+  select(-definitions, -data_source) %>%
+  distinct() %>%
+  left_join(chideod.def.fixed, by = "traditional") %>%
+  distinct() -> chideod.hopefull.fixed
+```
+
+
+
+```{r}
+chideod %>%
+  count(data_source)
+  
+
+chideod.hopefull.fixed %>%
+  count(data_source)
+
+chideod.hopefull.fixed %>%
+  filter(!str_detect(data_source, "zdic")) %>%
+  distinct() -> chideod.definitions.ok
+
+
+  # filter(traditional == "徬徨") %>%
+  # select(traditional, data_source, definitions) %>%
+  # distinct() #%>%
+```
+
+Problem 1 solved: `data_source` and `definitions`
+
+# Problem 2: those damn decimal numbers
+
+It turns out that there was a bad excel conversion between the previous rds and the current version of the package.
+So I just used that rds to run the solutions to problem 1.
+Turns out not.
+
+```{r}
+chideod.definitions.ok 
+```
+
+```{r}
+library(CLD)
+cld %>%
+  select(S1:S4) %>%
+  stack() %>%
+  select(char = values) -> chars
+
+cld %>%
+  select(C1Frequency:C4Frequency) %>%
+  stack() %>%
+  select(charfreq = values) -> charfreq
+
+cld %>%
+  select(C1FamilySize:C4FamilySize) %>%
+  stack() %>%
+  select(charfam = values)  -> charfam
+
+cld %>%
+  select(C1SR:C4SR) %>%
+  stack() %>%
+  select(semrad = values) -> semrad
+
+cld %>%
+  select(C1SRFrequency:C4SRFrequency) %>%
+  stack() %>%
+  select(semradfreq = values) -> semradfreq
+
+cld %>%
+  select(C1SRFamilySize:C4SRFamilySize) %>%
+  stack() %>%
+  select(semradfam = values) -> semradfam
+
+cld %>%
+  select(C1PR:C4PR) %>%
+  stack() %>%
+  select(phoncomp = values) -> phoncomp
+
+cld %>%
+  select(C1PRFrequency:C4PRFrequency) %>%
+  stack() %>%
+  select(phoncompfreq = values) -> phoncompfreq
+
+cld %>%
+  select(C1PRFamilySize:C4PRFamilySize) %>%
+  stack() %>%
+  select(phoncompfam = values) -> phoncompfam
+
+
+cbind(chars, charfreq, charfam, semrad, semradfreq, semradfam, phoncomp, phoncompfreq, phoncompfam) %>%
+  distinct() -> cldfreqmeas
+cldfreqmeas
+```
+
+Joining the two tables together
+
+```{r}
+chideod.definitions.ok %>%
+  #filter(traditional == "叭叭叭叭") %>%
+  select(simplified1) %>%
+  stack() %>% 
+  select(char = values) %>%
+  left_join(cldfreqmeas) %>%
+  distinct() %>%
+  right_join(chideod.definitions.ok, by = c("char" = "simplified1")) %>%
+  mutate(character1_freq = charfreq,
+         character1_family_size = charfam,
+         character1_semantic_radical = semrad,
+         character1_semantic_radical_freq = semradfreq,
+         character1_semantic_family_size = semradfam, 
+         character1_phonetic_component = phoncomp,
+         character1_phonetic_component_freq = phoncompfreq,
+         character1_phonetic_family_size = phoncompfam) -> chideodc1
+
+chideodc1 <- chideodc1[-c(1:9)] 
+
+chideodc1%>%
+  select(simplified2) %>%
+  stack() %>% 
+  select(char = values) %>%
+  left_join(cldfreqmeas) %>%
+  distinct() %>%
+  right_join(chideodc1, by = c("char" = "simplified2")) %>%
+  mutate(character2_freq = charfreq,
+         character2_family_size = charfam,
+         character2_semantic_radical = semrad,
+         character2_semantic_radical_freq = semradfreq,
+         character2_semantic_family_size = semradfam, 
+         character2_phonetic_component = phoncomp,
+         character2_phonetic_component_freq = phoncompfreq,
+         character2_phonetic_family_size = phoncompfam) -> chideodc2
+
+
+chideodc2 <- chideodc2[-c(1:9)] 
+
+chideodc2%>%
+  select(simplified3) %>%
+  stack() %>% 
+  select(char = values) %>%
+  left_join(cldfreqmeas) %>%
+  distinct() %>%
+  right_join(chideodc2, by = c("char" = "simplified3")) %>%
+  mutate(character3_freq = charfreq,
+         character3_family_size = charfam,
+         character3_semantic_radical = semrad,
+         character3_semantic_radical_freq = semradfreq,
+         character3_semantic_family_size = semradfam, 
+         character3_phonetic_component = phoncomp,
+         character3_phonetic_component_freq = phoncompfreq,
+         character3_phonetic_family_size = phoncompfam) -> chideodc3
+
+chideodc3 <- chideodc3[-c(1:9)] 
+
+chideodc3%>%
+  select(simplified4) %>%
+  stack() %>% 
+  select(char = values) %>%
+  left_join(cldfreqmeas) %>%
+  distinct() %>%
+  right_join(chideodc3, by = c("char" = "simplified4")) %>%
+  mutate(character4_freq = charfreq,
+         character4_family_size = charfam,
+         character4_semantic_radical = semrad,
+         character4_semantic_radical_freq = semradfreq,
+         character4_semantic_family_size = semradfam, 
+         character4_phonetic_component = phoncomp,
+         character4_phonetic_component_freq = phoncompfreq,
+         character4_phonetic_family_size = phoncompfam) -> chideodc4
+
+chideodc4 <- chideodc4[-c(1:9)] 
+
+
+new.and.improved.chideod <- chideodc4 
+```
+
+```{r}
+library(writexl)
+write_rds(new.and.improved.chideod, here("revision", "chideod.rds")) 
+write_xlsx(new.and.improved.chideod, here("revision", "chideod.xlsx"), col_names = TRUE) 
+write_csv(new.and.improved.chideod, here("revision", "chideod.csv"), col_names = TRUE) 
+
+```
+
+
+
+
+
+
+
+
+
+

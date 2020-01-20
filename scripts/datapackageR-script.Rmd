@@ -48,13 +48,13 @@ cr_project <- osf_retrieve_node("kpwgf") # OSF Chinese Ideophone Database
 cr_project %>%
   osf_ls_files() %>%
   filter(str_detect(name, "rds")) %>%
-  osf_download()
+  osf_download(conflicts = "overwrite")
 ```
 
 read in data as df
 ```{r}
 df <- read_rds("chideod.rds")
-df
+df 
 ```
 
 
@@ -74,10 +74,12 @@ datapackage_skeleton(name = PACKAGENAME,
 #write.csv(x = df,file = file.path(PATH, "chideod.csv"), row.names = FALSE)
 
 # write raw data to rds
-write_csv(df, file.path(PATH, "chideod.csv"))
+#write_csv(df, file.path(PATH, "chideod.csv"))
+write_rds(df, file.path(PATH, "chideod.rds"))
 
 # this works because we called datapackage_skeleton() first.
-use_raw_dataset(file.path(PATH, "chideod.csv"))
+#use_raw_dataset(file.path(PATH, "chideod.csv"))
+use_raw_dataset(file.path(PATH, "chideod.rds"))
 ```
 
 
@@ -97,7 +99,7 @@ use_processing_script(file = "chinese_database.Rmd",
 ---
 title: Process OSF repository data into datapackage
 author: Thomas Van Hoey
-date:  13 January, 2020
+date:  21 January, 2020
 output_format: html_document
 ---
 
@@ -147,11 +149,12 @@ We’ll fill this in and save the resulting file.
 NULL
 
 
+
 #' Detailed description of the data
 #' @name chideod
 #' @docType data
 #' @title Descriptive data title
-#' @format a \code{tbl_df} containing the following fields:
+#' @format a \code{data.frame} containing the following fields:
 #' \describe{
 #' \item{traditional}{}
 #' \item{simplified}{}
@@ -165,15 +168,17 @@ NULL
 #' \item{old_chinese_ipa}{}
 #' \item{language_stage}{}
 #' \item{data_source}{}
-#' \item{definitions}{}
-#' \item{simplified1}{}
-#' \item{simplified2}{}
-#' \item{simplified3}{}
-#' \item{simplified4}{}
 #' \item{traditional1}{}
 #' \item{traditional2}{}
 #' \item{traditional3}{}
 #' \item{traditional4}{}
+#' \item{simplified1}{}
+#' \item{simplified2}{}
+#' \item{simplified3}{}
+#' \item{simplified4}{}
+#' \item{sensory_imagery}{}
+#' \item{definitions}{}
+#' \item{orthograpic_variants}{}
 #' \item{morphological_template}{}
 #' \item{radical_support}{}
 #' \item{character1_freq}{}
@@ -209,14 +214,14 @@ NULL
 #' \item{character3_phonetic_family_size}{}
 #' \item{character4_phonetic_family_size}{}
 #' \item{interjection}{}
-#' \item{sensory_imagery}{}
-#' \item{orthograpic_variants}{}
 #' \item{note}{}
 #' }
 #' @source The data comes from https://osf.io/kpwg.
 #' @seealso
 #' \link{CHIDEOD}
 NULL
+
+
 
 ```
 
@@ -235,7 +240,7 @@ DataPackageR::document(package_path)
 ```
 Package: CHIDEOD
 Title: Data package containing the Chinese Ideophone Database
-Version: 0.9
+Version: 0.9.2
 Authors@R: 
     person(given = "Thomas",
            family = "Van Hoey",
@@ -245,14 +250,15 @@ Description: This package contains the contents of the Chinese Ideophone Databas
 License: GNU General Public License v2.0
 Encoding: UTF-8
 LazyData: true
-DataVersion: 0.9.0
+DataVersion: 0.9.2
 Roxygen: list(markdown = TRUE)
-Date: 2020-01-13
+Date: 2020-01-21
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 7.0.0
+
 ```
 
 ```{r}
@@ -280,7 +286,7 @@ install_github("simazhi/chinese_ideophone_database/CHIDEOD")
 
 library(CHIDEOD)
 
-data(package = "CHIDEOD")
+#data(package = "CHIDEOD")
 
 chideod # so it worked, the data is now here
 ```
