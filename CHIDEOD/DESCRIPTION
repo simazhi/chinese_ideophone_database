@@ -1,7 +1,7 @@
 Package: CHIDEOD
 Title: Data package containing the Chinese Ideophone Database
-Version: 0.9.1
-Authors@R:
+Version: 0.9.2
+Authors@R: 
     person(given = "Thomas",
            family = "Van Hoey",
            role = c("aut", "cre"),
@@ -10,10 +10,10 @@ Description: This package contains the contents of the Chinese Ideophone Databas
 License: GNU General Public License v2.0
 Encoding: UTF-8
 LazyData: true
-DataVersion: 0.9.1
+DataVersion: 0.9.2
 Roxygen: list(markdown = TRUE)
-Date: 2020-01-18
-Suggests:
+Date: 2020-01-21
+Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr

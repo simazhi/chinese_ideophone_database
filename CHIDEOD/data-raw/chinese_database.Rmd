@@ -1,11 +1,10 @@
 ---
 title: Process OSF repository data into datapackage
 author: Thomas Van Hoey
-date:  13 January, 2020
+date:  21 January, 2020
 output_format: html_document
 ---
 
 ```{r}
 chideod <- df
 ```
-

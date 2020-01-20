@@ -31,10 +31,18 @@ NULL
 #' \item{middle_chinese_ipa}{}
 #' \item{old_chinese_ipa}{}
 #' \item{language_stage}{}
+#' \item{data_source}{}
 #' \item{traditional1}{}
 #' \item{traditional2}{}
 #' \item{traditional3}{}
 #' \item{traditional4}{}
+#' \item{simplified1}{}
+#' \item{simplified2}{}
+#' \item{simplified3}{}
+#' \item{simplified4}{}
+#' \item{sensory_imagery}{}
+#' \item{definitions}{}
+#' \item{orthograpic_variants}{}
 #' \item{morphological_template}{}
 #' \item{radical_support}{}
 #' \item{character1_freq}{}
@@ -70,13 +78,9 @@ NULL
 #' \item{character3_phonetic_family_size}{}
 #' \item{character4_phonetic_family_size}{}
 #' \item{interjection}{}
-#' \item{sensory_imagery}{}
-#' \item{orthograpic_variants}{}
 #' \item{note}{}
-#' \item{data_source}{}
-#' \item{definitions}{}
 #' }
-#' @source  The data comes from https://osf.io/kpwg.
+#' @source The data comes from https://osf.io/kpwg.
 #' @seealso
 #' \link{CHIDEOD}
 NULL
