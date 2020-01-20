@@ -1,0 +1,12 @@
+name: chideod_appversion
+title: chideod_appversion
+username:
+account: simazhi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1649923
+bundleId: 2741683
+url: https://simazhi.shinyapps.io/chideod_appversion/
+when: 1579542777.99765
+asMultiple: FALSE
+asStatic: FALSE

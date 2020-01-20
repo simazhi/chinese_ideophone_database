@@ -10,7 +10,7 @@
 #global.R
 library(shiny)
 library(tidyverse)
-library(readxl)
+#library(readxl)
 library(DT)
 library(shinythemes)
 
@@ -19,12 +19,12 @@ library(shinythemes)
 #library(devtools)
 #install_github("simazhi/chinese_ideophone_database/CHIDEOR")
 
-library(CHIDEOR) 
+library(CHIDEOD) 
 #make sure this is the latest version of this package
 data("chideod")
 
 #ideodata <- read_xlsx("www/data.xlsx") %>%
-    ideodata <- chideod
+ideodata <- chideod
 
 
 
@@ -32,11 +32,12 @@ data("chideod")
 
 server <- 
     function(input, output) {
-        checkGroup <- reactive(c(input$checkGroupPhonology,
+        checkGroup <- reactive(c(input$checkGroupDatavars,
                                  input$checkGroupOrthography,
-                                 input$checkGroupFormation,
-                                 input$checkGroupMotivation,
+                                 input$checkGroupPhonology,
                                  input$checkGroupMeaning,
+                                 input$checkGroupMotivation,
+                                 input$checkGroupFormation,
                                  input$checkGroupFrequencies,
                                  input$checkGroupOther))
         #input$checkGroup <- c(input$checkGroupForm,input$checkGroupMeaning)
@@ -77,100 +78,107 @@ navbarPage("CHIDEOD",
                                   sidebarPanel(
                                       width = 3,
                                       #checkboxes
-                                      checkboxGroupInput("checkGroupPhonology", 
-                                                         label = h3("Phonology"), 
-                                                         choices = c("Pinyin without tones" = "pinyinnone", 
-                                                                     "Pinyin with tones" = "pinyintone",
-                                                                     "Pinyin with numbers" = "pinyinnum",
-                                                                     "Middle Chinese" = "MC", 
-                                                                     "Old Chinese" = "OC"),
-                                                         selected = "pinyinnone"
+                                      checkboxGroupInput("checkGroupDatavars", 
+                                                         label = h2("Data variables"), 
+                                                         choices = c("Language stage" = "language_stage",
+                                                                     "Data source" = "data_source"),
+                                                         selected = c("language_stage", "data_source")
                                       ),
                                       #end of checkboxes
                                       br(),
+                                      h2("Descriptive variables"),
                                       #checkboxes two
                                       checkboxGroupInput("checkGroupOrthography", 
                                                          label = h3("Orthography"), 
                                                          choices = c("Traditional Chinese" = "traditional",
                                                                      "Simplified Chinese" = "simplified",
-                                                                     "Traditional 1" = "T1",
-                                                                     "Traditional 2" = "T2",
-                                                                     "Traditional 3" = "T3",
-                                                                     "Traditional 4" = "T4",
-                                                                     "Simplified 1" = "S1",
-                                                                     "Simplified 2" = "S2",
-                                                                     "Simplified 3" = "S3",
-                                                                     "Simplified 4" = "S4",
-                                                                     "Semantic radical 1" = "S1.sem",
-                                                                     "Semantic radical 2" = "S2.sem",
-                                                                     "Semantic radical 3" = "S3.sem",
-                                                                     "Semantic radical 4" = "S4.sem",
-                                                                     "Sound radical 1" = "S1.phon",
-                                                                     "Sound radical 2" = "S2.phon",
-                                                                     "Sound radical 3" = "S3.phon",
-                                                                     "Sound radical 4" = "S4.phon"),                                                   
+                                                                     "Traditional character 1" = "traditional1",
+                                                                     "Traditional character 2" = "traditional2",
+                                                                     "Traditional character 3" = "traditional3",
+                                                                     "Traditional character 4" = "traditional4",
+                                                                     "Simplified character 1" = "simplified1",
+                                                                     "Simplified character 2" = "simplified2",
+                                                                     "Simplified character 3" = "simplified3",
+                                                                     "Simplified character 4" = "simplified4",
+                                                                     "Semantic radical 1" = "character1_semantic_radical",
+                                                                     "Semantic radical 2" = "character2_semantic_radical",
+                                                                     "Semantic radical 3" = "character3_semantic_radical",
+                                                                     "Semantic radical 4" = "character4_semantic_radical",
+                                                                     "Sound component 1" = "character1_phonetic_component",
+                                                                     "Sound component 2" = "character2_phonetic_component",
+                                                                     "Sound component 3" = "character3_phonetic_component",
+                                                                     "Sound component 4" = "character4_phonetic_component",
+                                                                     "Orthographic variants" = "orthograpic_variants"),                                                   
                                                          selected = "traditional"
                                       ),
                                       #end of checkboxes
-                                      br(), 
-                                      # checkboxes three
-                                      checkboxGroupInput("checkGroupFormation", 
-                                                         label = h3("Formation"), 
-                                                         choices = c("Base and Reduplicant" = "morphology")
+                                      br(),                                    
+                                      #checkboxes
+                                      checkboxGroupInput("checkGroupPhonology", 
+                                                         label = h3("Phonology"), 
+                                                         choices = c("Pinyin without tones" = "pinyin_without_tone", 
+                                                                     "Pinyin with tones" = "pinyin_tone",
+                                                                     "Pinyin with numbers" = "pinyin_tonenumber",
+                                                                     "IPA with toneletters"= "ipa_toneletter",
+                                                                     "IPA with tonenumbers" = "ipa_tonenumber",
+                                                                     "Middle Chinese Baxter" = "middle_chinese_baxter", 
+                                                                     "Middle Chinese IPA" = "middle_chinese_ipa",
+                                                                     "Old Chinese IPA" = "old_chinese_ipa"),
+                                                         selected = "pinyin_tone"
                                       ),
                                       #end of checkboxes
-                                      br(), 
-                                      # checkboxes four
-                                      checkboxGroupInput("checkGroupMotivation", 
-                                                         label = h3("Motivation"), 
-                                                         choices = c("Radical support" = "radsup")
-                                      ),
-                                      #end of checkboxes
+                                      br(),
                                       # checkboxes five
                                       checkboxGroupInput("checkGroupMeaning", 
-                                                         label = h3("Meaning"), 
-                                                         choices = c("Handian 漢典 (zdic)" = "zdic",
-                                                                     "Kroll (2015)" = "Kroll",
-                                                                     "Hanyu Da Cidian 漢語大詞典" = "HYDCD"),
-                                                         selected = "Kroll"
+                                                         label = h3("Definitions"), 
+                                                         choices = c("Definitions" = "definitions")
+                                      ),
+                                      #end of checkboxes
+                                      br(),
+                                      # checkboxes three
+                                      checkboxGroupInput("checkGroupFormation", 
+                                                         label = h2("Analytical variables"), 
+                                                         choices = c("Morphological template" = "morphological_template",
+                                                                     "Radical support" = "radical_support",
+                                                                     "Interjection" = "interjection",
+                                                                     "Sensory imagery" = "sensory_imagery")
                                       ),
                                       #end of checkboxes
                                       br(),
                                       # checkboxes six
                                       checkboxGroupInput("checkGroupFrequencies", 
-                                                         label = h3("Frequencies"), 
-                                                         choices = c("S1 character freq" = "S1.charfreq",
-                                                                     "S2 character freq" = "S2.charfreq",
-                                                                     "S3 character freq" = "S3.charfreq",
-                                                                     "S4 character freq" = "S4.charfreq",
-                                                                     "S1 family freq" = "S1.famfreq",
-                                                                     "S2 family freq" = "S2.famfreq",
-                                                                     "S3 family freq" = "S3.famfreq",
-                                                                     "S4 family freq" = "S4.famfreq",
-                                                                     "S1 semantic radical freq" = "S1.semfreq",
-                                                                     "S2 semantic radical freq" = "S2.semfreq",
-                                                                     "S3 semantic radical freq" = "S3.semfreq",
-                                                                     "S4 semantic radical freq" = "S4.semfreq",
-                                                                     "S1 semantic radical fam freq" = "S1.semfam",
-                                                                     "S2 semantic radical fam freq" = "S1.semfam",
-                                                                     "S3 semantic radical fam freq" = "S1.semfam",
-                                                                     "S4 semantic radical fam freq" = "S1.semfam",
-                                                                     "S1 sound freq" = "S1.phonfreq",
-                                                                     "S2 sound freq" = "S2.phonfreq",
-                                                                     "S3 sound freq" = "S3.phonfreq",
-                                                                     "S4 sound freq" = "S4.phonfreq",
-                                                                     "S1 sound fam freq" = "S1.phonfam",
-                                                                     "S2 sound fam freq" = "S2.phonfam",
-                                                                     "S3 sound fam freq" = "S3.phonfam",
-                                                                     "S4 sound fam freq" = "S4.phonfam")
+                                                         label = h3("Frequency measures"), 
+                                                         choices = c("Character 1 freq" = "character1_freq",
+                                                                     "Character 2 freq" = "character2_freq",
+                                                                     "Character 3 freq" = "character3_freq",
+                                                                     "Character 4 freq" = "character4_freq",
+                                                                     "Character 1 family size" = "character1_family_size",
+                                                                     "Character 2 family size" = "character2_family_size",
+                                                                     "Character 3 family size" = "character3_family_size",
+                                                                     "Character 4 family size" = "character4_family_size",
+                                                                     "Character 1 radical freq" = "character1_semantic_radical_freq",
+                                                                     "Character 2 radical freq" = "character2_semantic_radical_freq",
+                                                                     "Character 3 radical freq" = "character3_semantic_radical_freq",
+                                                                     "Character 4 radical freq" = "character4_semantic_radical_freq",
+                                                                     "Character 1 radical family size" = "character1_semantic_family_size",
+                                                                     "Character 2 radical family size" = "character2_semantic_family_size",
+                                                                     "Character 3 radical family size" = "character3_semantic_family_size",
+                                                                     "Character 4 radical family size" = "character4_semantic_family_size",
+                                                                     "Character 1 phonetic freq" = "character1_phonetic_component_freq",
+                                                                     "Character 2 phonetic freq" = "character2_phonetic_component_freq",
+                                                                     "Character 3 phonetic freq" = "character3_phonetic_component_freq",
+                                                                     "Character 4 phonetic freq" = "character4_phonetic_component_freq",
+                                                                     "Character 1 phonetic family size" = "character1_phonetic_family_size",
+                                                                     "Character 2 phonetic family size" = "character2_phonetic_family_size",
+                                                                     "Character 3 phonetic family size" = "character3_phonetic_family_size",
+                                                                     "Character 4 phonetic family size" = "character4_phonetic_family_size")
                                       ),
                                       #end of checkboxes
                                       br(),
                                       # checkboxes seven
                                       checkboxGroupInput("checkGroupOther", 
                                                          label = h3("Other variables"), 
-                                                         choices = c("Variants" = "variant",
-                                                                     "Data source" = "datasource")
+                                                         choices = c("Notes" = "note")
                                       )
                                       #, #end of checkboxes
                                       # downloadButton('download',"Download the data")
@@ -211,7 +219,7 @@ navbarPage("CHIDEOD",
                     print("and Arthur Lewis Thompson"),
                     br(),
                     print("Last updated:"),
-                    strong("July 2019"),
+                    strong("January 2020"),
                     a(href="https://osf.io/kpwgf/", "(link to repository)"),
                     br(),
                     print("Please cite as: "),
