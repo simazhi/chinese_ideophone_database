@@ -93,13 +93,13 @@ use_processing_script(file = "chinese_database.Rmd",
 
 
 # Edit your processing script (the Rmd file)
-
+/data-raw/chinese_database.Rmd
 
 ```
 ---
 title: Process OSF repository data into datapackage
 author: Thomas Van Hoey
-date:  21 January, 2020
+date:  22 March, 2020
 output_format: html_document
 ---
 
@@ -240,7 +240,7 @@ DataPackageR::document(package_path)
 ```
 Package: CHIDEOD
 Title: Data package containing the Chinese Ideophone Database
-Version: 0.9.2
+Version: 0.9.3
 Authors@R: 
     person(given = "Thomas",
            family = "Van Hoey",

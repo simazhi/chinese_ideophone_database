@@ -1,6 +1,6 @@
 Package: CHIDEOD
 Title: Data package containing the Chinese Ideophone Database
-Version: 0.9.2
+Version: 0.9.3
 Authors@R: 
     person(given = "Thomas",
            family = "Van Hoey",
@@ -12,7 +12,7 @@ Encoding: UTF-8
 LazyData: true
 DataVersion: 0.9.2
 Roxygen: list(markdown = TRUE)
-Date: 2020-01-21
+Date: 2020-03-22
 Suggests: 
     knitr,
     rmarkdown
