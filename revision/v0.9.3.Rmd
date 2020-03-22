@@ -1,0 +1,51 @@
+---
+title: "v0.9.3"
+author: "Thomas Van Hoey"
+date: "3/22/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(CHIDEOD)
+library(here)
+library(writexl)
+```
+
+
+```{r}
+chideod 
+```
+
+# Lumping INNER_FEELINGS and COGNITIVE_STATE together
+
+```{r}
+chideod %>%
+  mutate(sensory_imagery = case_when(
+    sensory_imagery == "COGNITIVE_STATE" ~ "INNER_FEELINGS",
+    TRUE ~ sensory_imagery
+  )) %>%
+  #count(sensory_imagery) %>%
+  distinct() -> chideod
+```
+
+
+```{r}
+write_rds(chideod, here("revision", "chideod.rds"))
+write_csv(chideod, here("revision", "chideod.csv"), col_names = TRUE)
+write_xlsx(chideod, here("revision", "chideod.xlsx"), col_names = TRUE)
+
+```
+
+
+
+
+
+
+
+
+
