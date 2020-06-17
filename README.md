@@ -13,7 +13,7 @@
 This is the directory where the R data package CHIDEOD is stored.
 **PLEASE NOTE THAT THE MAIN PROJECT REPOSITORY IS HELD AT THE OSF REPOSITORY (https://osf.io/kpwgf/) AND NOT HERE,** although you are free to look around at the scripts that are used to update the Chinese Ideophone Database.
 
-If you navigate to the OSF-repository, you can access the Chinese Ideophoen Database (CHIDEOD) in the following formats:
+If you navigate to the OSF-repository, you can access the Chinese Ideophone Database (CHIDEOD) in the following formats:
 
 * **chideod.rds**
 * **chideod.csv**
