@@ -49,7 +49,7 @@ devtools::install_github("simazhi/chinese_ideophone_database/CHIDEOD")
 * __interesting_lists__ This folder contains lists that were deemed interesting for us when making the Chinese Ideophone Database, and holds miscellaneous items and statistics that were made using previous stages of the database. Got a free afternoon and want to go through it for ideophone treasurehunting? Sure, go ahead.
 * __scripts__ A misscelaneous collection of scripts from which we draw when updating the database. Feel free to reuse parts of them if they can help you solve your own database problems. On the other hand, please do not expect us to list the contents of each one. They are mostly intented for our own ad hoc use and adaptation and we provide them here for our own open transparency.
 * __shiny_app__ The code for the shiny app deployment of CHIDEOD.
-* __variable_and_data__ This folder contains the basic structure of CHIDEOD (chideod_variables.pdf), as well as a list of abbreviations and references (abbreviations_references.md), used in the database itself. **We strongly recommend to read the paper version, which goes in detail over all of these items.**
+* __variables_and_data__ This folder contains the basic structure of CHIDEOD (chideod_variables.pdf), as well as a list of abbreviations and references (abbreviations_references.md), used in the database itself. **We strongly recommend to read the paper version, which goes in detail over all of these items.**
 
 # License
 
