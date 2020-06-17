@@ -42,6 +42,7 @@ devtools::install_github("simazhi/chinese_ideophone_database/CHIDEOD")
 * __chinese_ideophone_database.Rproj__ This file is used when we update CHIDEOD, and allows for easy project management. You can ignore this file.
 * __CHIDEOD_VERSIONNUMBER_tar.gz__ This file contains the raw R package of CHIDEOD. You can use this if the above instructions to install the R package fail.
 * __.gitignore__ This file tells github which files to ignore. You can do so too.
+* __Changelog.md__ This file contains the changes made after CHIDEOD 1.0, which is congruent with the version as published in the explanatory paper (*add link to article*).
 
 ### Folders
 
