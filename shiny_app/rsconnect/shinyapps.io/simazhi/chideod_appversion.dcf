@@ -5,8 +5,8 @@ account: simazhi
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1649923
-bundleId: 2741683
+bundleId: 2907553
 url: https://simazhi.shinyapps.io/chideod_appversion/
-when: 1579542777.99765
+when: 1584866153.53806
 asMultiple: FALSE
 asStatic: FALSE
