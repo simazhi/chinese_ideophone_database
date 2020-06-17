@@ -1,5 +1,7 @@
 # Chinese Ideophone Database
 
+## Current version
+
 **CURRENT VERSION OF THE DATABASE: 0.9.3**
 
 ## Deployments of the Chinese Ideophone Database
