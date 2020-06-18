@@ -62,7 +62,7 @@ Please consult the LICENCE.md file for more information.
 
 As is mentioned on the home project folder for this in the OSF repository (https://osf.io/kpwgf/), the project can be cited as:
 
-Van Hoey, Thomas & Arthur Lewis Thompson. 2019. Chinese ideophone database (CHIDEOD). doi: 10.17605/OSF.IO/KPWGF
+**Van Hoey, Thomas & Arthur Lewis Thompson. 2019. Chinese ideophone database (CHIDEOD). doi: 10.17605/OSF.IO/KPWGF**
 
 If used in a project, you can also add the version number (see top of this README.md file).
 
