@@ -46,7 +46,8 @@ server <-
         output$table <- DT::renderDataTable(
             DT::datatable({
                 data <- ideodata
-                data[, checkGroup(), drop = FALSE]
+                data <- data[, checkGroup(), drop = FALSE]
+                data <- distinct(data)
             },
             extensions = c('Buttons', 'ColReorder'), 
             options = list(dom = 'Bfrtip',
@@ -204,28 +205,37 @@ navbarPage("CHIDEOD",
            tabPanel("About",
                     h2("About CHIDEOD"),
                     h4("— The Chinese Ideophone Database"),
-                    p("This article introduces the Chinese Ideophone Database (CHIDEOD, accessible at https://osf.io/kpwgf/
-                      an open-source dataset, which collects 3453 unique onomatopoeia and ideophones (mimetics) of Mandarin Chinese, 
-                      as well as Middle Chinese and Old Chinese (based on Baxter & Sagart 2014). 
-                      These are analyzed according to a wide range of phonological, orthographic, and semantic variables. 
-                      Apart from an overview of these variables, preliminary findings are briefly discussed, 
-                      such as motivation of the orthographic encoding of semantic and phonological forms, 
-                      so-called radical support and phonological support. 
-                      Lastly, some possible future applications are suggested, 
-                      to show how CHIDEOD can integrate with existing databases and provide a typological example for ideophone studies in other languages."),
+                    p("The Chinese Ideophone Database (CHIDEOD) is an open-source dataset, which currently collects 4948 unique onomatopoeia and ideophones (mimetics) of Mandarin, as well as Middle Chinese and Old Chinese. These are analyzed according to a wide range of variables pertaining to the type of data, description, analysis and frequency."),
                     br(),
                     print("© Thomas Van Hoey 司馬智"),
                     a(href="https://www.thomasvanhoey.com", "(website)"),
                     print("and Arthur Lewis Thompson"),
                     br(),
+                    br(),
                     print("Last updated:"),
-                    strong("January 2020"),
+                    strong("June 2020"),
                     a(href="https://osf.io/kpwgf/", "(link to repository)"),
                     br(),
-                    print("Please cite as: "),
-                    strong("Van Hoey, Thomas & Arthur Lewis Thompson. 2019. Chinese ideophone database. osf.io/kpwgf")
+                    br(),
+                    print("Link to the explanatory paper (to be added)."),
+                    br(),
+                    br(),
+                    h2("Please cite as: "),
+                    strong("Van Hoey, Thomas & Arthur Lewis Thompson. 2019. Chinese ideophone database (CHIDEOD). doi: 10.17605/OSF.IO/KPWGF"),
+                    br(),
+                    h2("Licence"),
+                    print("The database is licenced under "),
+                    a(href="https://creativecommons.org/licenses/by-nc-sa/4.0/", "the CC BY-NC-SA 4.0 licence"),
+                    print(". This means that you can share and adapt, but that you cannot use it for any commerical purposes, and that you need to attribute correctly."),
+                    br(),
+                    h2("Disclaimer"),
+                    print("This database has been constructed with academic purposes in mind, especially in the domain of ideophone studies. We recommend using this app as an exploratory tool but consulting the datasets on the OSF page for substantial research. Please also have a look at the paper that details the structure and which contains the references from which we draw a number of data from that were transformatively combined into this one repository. These data were collected with fair use in mind and we do recommend consulting those sources (and citing them) if you publish your research. CHIDEOD is a tool that can help you on your way."),
+                    br(),
+                    print("There may be a number of small typos or mistakes in the database. If you find any, please do not hesitate to contact us so that we can improve a better repository for the study of Chinese ideophones.")
                     
-                    )
+                    ),
+           tabPanel("Data variables and abbreviations",
+                    includeMarkdown("https://raw.githubusercontent.com/simazhi/chinese_ideophone_database/master/variables_and_data/abbreviations_references.md"))
            )
 
 
