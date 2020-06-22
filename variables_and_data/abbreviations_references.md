@@ -121,7 +121,8 @@ Wáng, Wànrén 王万仁 (ed.). 1987. Xiàngshēngcí lì shì 象声�
 
 # Variables
 
-(See https://raw.githubusercontent.com/simazhi/chinese_ideophone_database/master/variables_and_data/chideod_variables.png if this does not show up correctly.)
+(See https://raw.githubusercontent.com/simazhi/chinese_ideophone_database/master/variables_and_data/chideod_variables.png if this picture does not show up correctly.)
+
 
 
 <img src="https://github.com/simazhi/chinese_ideophone_database/blob/master/variables_and_data/chideod_variables.png?raw=true" alt="drawing" width="80%"/>
