@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/166169099.svg)](https://zenodo.org/badge/latestdoi/166169099)
+
 # Chinese Ideophone Database
 
 ## Current version
