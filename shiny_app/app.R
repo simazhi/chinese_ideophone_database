@@ -88,6 +88,21 @@ navbarPage("CHIDEOD",
                                       #end of checkboxes
                                       br(),
                                       h2("Descriptive variables"),
+                                      #checkboxes
+                                      checkboxGroupInput("checkGroupPhonology", 
+                                                         label = h3("Phonology"), 
+                                                         choices = c("Pinyin without tones" = "pinyin_without_tone", 
+                                                                     "Pinyin with tones" = "pinyin_tone",
+                                                                     "Pinyin with numbers" = "pinyin_tonenumber",
+                                                                     "IPA with toneletters"= "ipa_toneletter",
+                                                                     "IPA with tonenumbers" = "ipa_tonenumber",
+                                                                     "Middle Chinese Baxter" = "middle_chinese_baxter", 
+                                                                     "Middle Chinese IPA" = "middle_chinese_ipa",
+                                                                     "Old Chinese IPA" = "old_chinese_ipa"),
+                                                         selected = "pinyin_without_tone"
+                                      ),
+                                      #end of checkboxes
+                                      br(),                                      
                                       #checkboxes two
                                       checkboxGroupInput("checkGroupOrthography", 
                                                          label = h3("Orthography"), 
@@ -114,21 +129,6 @@ navbarPage("CHIDEOD",
                                       ),
                                       #end of checkboxes
                                       br(),                                    
-                                      #checkboxes
-                                      checkboxGroupInput("checkGroupPhonology", 
-                                                         label = h3("Phonology"), 
-                                                         choices = c("Pinyin without tones" = "pinyin_without_tone", 
-                                                                     "Pinyin with tones" = "pinyin_tone",
-                                                                     "Pinyin with numbers" = "pinyin_tonenumber",
-                                                                     "IPA with toneletters"= "ipa_toneletter",
-                                                                     "IPA with tonenumbers" = "ipa_tonenumber",
-                                                                     "Middle Chinese Baxter" = "middle_chinese_baxter", 
-                                                                     "Middle Chinese IPA" = "middle_chinese_ipa",
-                                                                     "Old Chinese IPA" = "old_chinese_ipa"),
-                                                         selected = "pinyin_tone"
-                                      ),
-                                      #end of checkboxes
-                                      br(),
                                       # checkboxes five
                                       checkboxGroupInput("checkGroupMeaning", 
                                                          label = h3("Definitions"), 
@@ -186,6 +186,12 @@ navbarPage("CHIDEOD",
                                   ), # end of sidepanel
                                   
                                   mainPanel(width = 9,
+                                            span(style='color:blue',
+                                            h3("How to use this app"),
+                                            print("Select the variables you are interested in by checking the boxes. You can then export the results or further trim them by inputting a search query. Note that if you search for phonological variables, you need to add a tilde to separate the syllables, e.g., 'ling~ling'.")
+                                            ),
+                                            br(),
+                                            br(),
                                             DT::dataTableOutput("table")
                                   ) #main panel
                     ), #sidebar layout,
@@ -229,10 +235,8 @@ navbarPage("CHIDEOD",
                     print(". This means that you can share and adapt, but that you cannot use it for any commerical purposes, and that you need to attribute correctly."),
                     br(),
                     h2("Disclaimer"),
-                    print("This database has been constructed with academic purposes in mind, especially in the domain of ideophone studies. We recommend using this app as an exploratory tool but consulting the datasets on the OSF page for substantial research. Please also have a look at the paper that details the structure and which contains the references from which we draw a number of data from that were transformatively combined into this one repository. These data were collected with fair use in mind and we do recommend consulting those sources (and citing them) if you publish your research. CHIDEOD is a tool that can help you on your way."),
-                    br(),
-                    print("There may be a number of small typos or mistakes in the database. If you find any, please do not hesitate to contact us so that we can improve a better repository for the study of Chinese ideophones.")
-                    
+                    print("CHIDEOD has been devised to serve academic research, especially within the domain of ideophone studies. We recommend CHIDEOD as an exploratory tool whilst consulting the datasets on the CHIDEOD Open Science Framework page. All CHIDEOD data were collected with fair use in mind and suggest that users pay attention to the ‘Data Source’ listed in CHIDEOD so that they may also cite and examine the primary sources behind CHIDEOD. We also ask that users and visitors cite CHIDEOD if it is has aided, benefited, or contributed to their research. If any typos or mistakes are encountered while using CHIDEOD, please do not hesitate to contact us so that we can provide a better repository for the study of Chinese ideophones.")
+
                     ),
            tabPanel("Data variables and abbreviations",
                     includeMarkdown("https://raw.githubusercontent.com/simazhi/chinese_ideophone_database/master/variables_and_data/abbreviations_references.md"))
@@ -245,7 +249,6 @@ navbarPage("CHIDEOD",
 
     
 #) #end tabpage
-
 
 
 
