@@ -11,9 +11,7 @@
 ## Link to the paper that details the contents
 
 
-[Van Hoey, Thomas & Arthur Lewis Thompson. 2020. The Chinese Ideophone Database (CHIDEOD). *Cahiers de linguistique Asie orientale* 49(2). 136–167.](https://brill.com/view/journals/clao/49/2/article-p136_2.xml) [doi](https://doi.org/10.1163/19606028-bja10006)
-
-
+[Van Hoey, Thomas & Arthur Lewis Thompson. 2020. The Chinese Ideophone Database (CHIDEOD). *Cahiers de linguistique Asie orientale* 49(2). 136–167.](https://brill.com/view/journals/clao/49/2/article-p136_2.xml) ([doi](https://doi.org/10.1163/19606028-bja10006))
 
 ## Deployments of the Chinese Ideophone Database
 
@@ -69,7 +67,7 @@ Please consult the LICENCE.md file for more information.
 
 Please cite the reference paper
 
-[Van Hoey, Thomas & Arthur Lewis Thompson. 2020. The Chinese Ideophone Database (CHIDEOD). *Cahiers de linguistique Asie orientale* 49(2). 136–167.](https://brill.com/view/journals/clao/49/2/article-p136_2.xml) [doi](https://doi.org/10.1163/19606028-bja10006)
+**Van Hoey, Thomas & Arthur Lewis Thompson. 2020. The Chinese Ideophone Database (CHIDEOD). Cahiers de linguistique Asie orientale 49(2). 136–167. https://doi.org/10.1163/19606028-bja10006.**
 
 And/or the current project version, based on the OSF repository:
 
