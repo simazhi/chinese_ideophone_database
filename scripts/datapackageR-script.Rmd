@@ -26,7 +26,7 @@ Other methods:
 
 # Set up
 ```{r}
-library(DataPackageR)
+library(DataPackageR) # devtools::install_github("RGLab/DataPackageR")
 library(here)
 library(tidyverse)
 ```
@@ -99,7 +99,7 @@ use_processing_script(file = "chinese_database.Rmd",
 ---
 title: Process OSF repository data into datapackage
 author: Thomas Van Hoey
-date:  22 March, 2020
+date:  05 November, 2020
 output_format: html_document
 ---
 
@@ -240,24 +240,24 @@ DataPackageR::document(package_path)
 ```
 Package: CHIDEOD
 Title: Data package containing the Chinese Ideophone Database
-Version: 0.9.3
+Version: 1.0
 Authors@R: 
     person(given = "Thomas",
            family = "Van Hoey",
            role = c("aut", "cre"),
            email = "thomas_van_hoey@hotmail.com")
 Description: This package contains the contents of the Chinese Ideophone Database CHIDEOD.
-License: GNU General Public License v2.0
+License: CC BY-NC-SA 4.0 license
 Encoding: UTF-8
 LazyData: true
-DataVersion: 0.9.2
 Roxygen: list(markdown = TRUE)
-Date: 2020-01-21
+RoxygenNote: 7.1.1
+DataVersion: 1.0.0
+Date: 2020-11-05
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.0.0
 
 ```
 

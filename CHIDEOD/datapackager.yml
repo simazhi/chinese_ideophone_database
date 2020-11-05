@@ -5,4 +5,4 @@ configuration:
   objects:
   - chideod
   render_root:
-    tmp: '835983'
+    tmp: '565714'

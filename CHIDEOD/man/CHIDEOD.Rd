@@ -4,7 +4,8 @@
 \name{chideod}
 \alias{chideod}
 \title{Descriptive data title}
-\format{a \code{data.frame} containing the following fields:
+\format{
+a \code{data.frame} containing the following fields:
 \describe{
 \item{traditional}{}
 \item{simplified}{}
@@ -65,7 +66,8 @@
 \item{character4_phonetic_family_size}{}
 \item{interjection}{}
 \item{note}{}
-}}
+}
+}
 \source{
 The data comes from https://osf.io/kpwg.
 }
