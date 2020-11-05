@@ -2,6 +2,8 @@
 
 # Chinese Ideophone Database
 
+<img src='https://github.com/simazhi/chinese_ideophone_database/blob/master/badge/logo.png' align="right" height="139" />
+
 ## Current version
 
 **CURRENT VERSION OF THE DATABASE: 0.9.3**
